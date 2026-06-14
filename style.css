@@ -1,7 +1,0 @@
-
-export async function onRequestPost(ctx){
- const b=await ctx.request.json();
- await ctx.env.DB.prepare('insert into timeline(day_number,time_slot,location,content,cost_est,cost_real,status) values(?,?,?,?,?,?,?)')
- .bind(b.day_number,b.time_slot,b.location,b.content,b.cost_est||0,b.cost_real||0,b.status||'Chưa đi').run();
- return Response.json({ok:true});
-}
