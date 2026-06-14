@@ -881,6 +881,330 @@ function renderCost() {
     `;
 
 }
+    function openMainModal() {
+
+    const choice =
+        confirm(
+            'OK = Thêm lịch trình\n\nCancel = Thêm hành lý'
+        );
+
+    if(choice) {
+
+        openTimelineModal();
+
+    } else {
+
+        openChecklistModal();
+
+    }
+
+}
+
+// =========================
+// TIMELINE MODAL
+// =========================
+
+function openTimelineModal() {
+
+    document
+        .getElementById('timelineModal')
+        .classList.add('show');
+
+}
+
+function closeTimelineModal() {
+
+    document
+        .getElementById('timelineModal')
+        .classList.remove('show');
+
+}
+
+// =========================
+// CHECKLIST MODAL
+// =========================
+
+function openChecklistModal() {
+
+    document
+        .getElementById('checklistModal')
+        .classList.add('show');
+
+}
+
+function closeChecklistModal() {
+
+    document
+        .getElementById('checklistModal')
+        .classList.remove('show');
+
+}
+
+// =========================
+// SAVE TIMELINE
+// =========================
+
+async function saveTimeline() {
+
+    const payload = {
+
+        day_number:
+            Number(
+                document
+                .getElementById('dayNumber')
+                .value
+            ),
+
+        time_slot:
+            document
+            .getElementById('timeSlot')
+            .value,
+
+        location:
+            document
+            .getElementById('location')
+            .value,
+
+        location_zh:
+            document
+            .getElementById('locationZh')
+            .value,
+
+        content:
+            document
+            .getElementById('content')
+            .value,
+
+        transport:
+            document
+            .getElementById('transport')
+            .value,
+
+        cost_est:
+            Number(
+                document
+                .getElementById('costEst')
+                .value || 0
+            ),
+
+        cost_real:
+            Number(
+                document
+                .getElementById('costReal')
+                .value || 0
+            ),
+
+        notes:
+            document
+            .getElementById('notes')
+            .value
+
+    };
+
+    if(!payload.location) {
+
+        alert(
+            'Nhập địa điểm'
+        );
+
+        return;
+
+    }
+
+    const res =
+        await fetch(
+            '/api/timeline',
+            {
+                method:'POST',
+
+                headers:{
+                    'Content-Type':
+                    'application/json'
+                },
+
+                body:
+                JSON.stringify(
+                    payload
+                )
+            }
+        );
+
+    const data =
+        await res.json();
+
+    if(data.success) {
+
+        closeTimelineModal();
+
+        clearTimelineForm();
+
+        await loadData();
+
+    } else {
+
+        alert(
+            data.error
+        );
+
+    }
+
+}
+
+// =========================
+// SAVE CHECKLIST
+// =========================
+
+async function saveChecklist() {
+
+    const payload = {
+
+        category:
+            document
+            .getElementById(
+                'checkCategory'
+            )
+            .value,
+
+        item_name:
+            document
+            .getElementById(
+                'checkItem'
+            )
+            .value
+
+    };
+
+    if(!payload.item_name) {
+
+        alert(
+            'Nhập tên vật dụng'
+        );
+
+        return;
+
+    }
+
+    const res =
+        await fetch(
+            '/api/checklist',
+            {
+                method:'POST',
+
+                headers:{
+                    'Content-Type':
+                    'application/json'
+                },
+
+                body:
+                JSON.stringify(
+                    payload
+                )
+            }
+        );
+
+    const data =
+        await res.json();
+
+    if(data.success) {
+
+        closeChecklistModal();
+
+        document
+            .getElementById(
+                'checkItem'
+            )
+            .value='';
+
+        await loadData();
+
+    } else {
+
+        alert(
+            data.error
+        );
+
+    }
+
+}
+
+// =========================
+// CLEAR FORM
+// =========================
+
+function clearTimelineForm() {
+
+    document
+        .getElementById('timeSlot')
+        .value='';
+
+    document
+        .getElementById('location')
+        .value='';
+
+    document
+        .getElementById('locationZh')
+        .value='';
+
+    document
+        .getElementById('content')
+        .value='';
+
+    document
+        .getElementById('transport')
+        .value='';
+
+    document
+        .getElementById('costEst')
+        .value='';
+
+    document
+        .getElementById('costReal')
+        .value='';
+
+    document
+        .getElementById('notes')
+        .value='';
+
+}
+
+// =========================
+// CLICK OUTSIDE MODAL
+// =========================
+
+window.onclick =
+function(event) {
+
+    const timelineModal =
+        document
+        .getElementById(
+            'timelineModal'
+        );
+
+    const checklistModal =
+        document
+        .getElementById(
+            'checklistModal'
+        );
+
+    if(
+        event.target ===
+        timelineModal
+    ) {
+
+        closeTimelineModal();
+
+    }
+
+    if(
+        event.target ===
+        checklistModal
+    ) {
+
+        closeChecklistModal();
+
+    }
+
+};
 
 </script>
 
