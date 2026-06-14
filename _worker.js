@@ -126,7 +126,47 @@ export default {
                 });
 
             }
+// =========================
+// ADD CHECKLIST
+// =========================
 
+if (
+    request.method === 'POST' &&
+    path === '/api/checklist'
+) {
+
+    const body = await request.json();
+
+    await env.DB.prepare(`
+        INSERT INTO checklist
+        (
+            category,
+            item_name,
+            is_checked
+        )
+        VALUES
+        (
+            ?, ?, 0
+        )
+    `)
+    .bind(
+        body.category,
+        body.item_name
+    )
+    .run();
+
+    return json({
+        success: true
+    });
+
+}
+
+return new Response(
+    'Not Found',
+    {
+        status: 404
+    }
+);
             return new Response(
                 'Not Found',
                 {
