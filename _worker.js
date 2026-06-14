@@ -647,7 +647,7 @@ function getHtmlContent() {
 
             let html = '';
             for(let i = 1; i <= maxDay; i++) {
-                html += `<button class="tab-btn ${i === currentDay ? 'active' : ''}" onclick="switchDay(${i})">Ngày ${i}</button>`;
+                html += '<button class="tab-btn ' + (i === currentDay ? 'active' : '') + '" onclick="switchDay(' + i + ')">Ngày ' + i + '</button>';
             }
             tabsContainer.innerHTML = html;
         }
@@ -677,27 +677,24 @@ function getHtmlContent() {
                 if(item.status === 'Đang đi') motionIcon = '🚗';
                 if(item.status === 'Đã xong') motionIcon = '🎉';
 
-                html += `
-                    <div class="timeline-card">
-                        <div class="card-top">
-                            <span class="time-badge">🕒 ${item.time_slot || 'Chưa định giờ'}</span>
-                            <span class="status-badge ${statusClass}" onclick="quickToggleStatus(${item.id}, '${item.status}')">
-                                ${item.status || 'Chưa đi'} ${motionIcon}
-                            </span>
-                        </div>
-                        <div class="location-title" onclick="editTimeline(${item.id})" style="cursor:pointer; color:var(--primary-dark)">
-                            ${item.location}
-                        </div>
-                        ${item.location_zh ? `<div class="location-zh">🇨🇳 ${item.location_zh}</div>` : ''}
-                        ${item.content ? `<div class="card-content">${item.content.replace(/\n/g, '<br>')}</div>` : ''}
-                        
-                        <div class="card-meta">
-                            <div class="meta-item">🚇 ${item.transport || 'Tự túc'}</div>
-                            <div class="meta-item" style="color:var(--text-main); font-weight:700;">💰 ${item.cost_real > 0 ? item.cost_real : item.cost_est} Tệ</div>
-                            <button class="btn-mini-delete" onclick="deleteTimeline(${item.id})">🗑️</button>
-                        </div>
-                    </div>
-                `;
+                html += '<div class="timeline-card">'
+                     + '<div class="card-top">'
+                     + '<span class="time-badge">🕒 ' + (item.time_slot || 'Chưa định giờ') + '</span>'
+                     + '<span class="status-badge ' + statusClass + '" onclick="quickToggleStatus(' + item.id + ', \'' + item.status + '\')">'
+                     + (item.status || 'Chưa đi') + ' ' + motionIcon
+                     + '</span>'
+                     + '</div>'
+                     + '<div class="location-title" onclick="editTimeline(' + item.id + ')" style="cursor:pointer; color:var(--primary-dark)">'
+                     + item.location
+                     + '</div>'
+                     + (item.location_zh ? '<div class="location-zh">🇨🇳 ' + item.location_zh + '</div>' : '')
+                     + (item.content ? '<div class="card-content">' + item.content.replace(/\n/g, '<br>') + '</div>' : '')
+                     + '<div class="card-meta">'
+                     + '<div class="meta-item">🚇 ' + (item.transport || 'Tự túc') + '</div>'
+                     + '<div class="meta-item" style="color:var(--text-main); font-weight:700;">💰 ' + (item.cost_real > 0 ? item.cost_real : item.cost_est) + ' Tệ</div>'
+                     + '<button class="btn-mini-delete" onclick="deleteTimeline(' + item.id + ')">🗑️</button>'
+                     + '</div>'
+                     + '</div>';
             });
             container.innerHTML = html;
         }
@@ -721,15 +718,13 @@ function getHtmlContent() {
                 html += `<div class="checklist-group"><div class="group-title">${cat}</div>`;
                 groups[cat].forEach(item => {
                     const isChecked = item.is_checked === 1;
-                    html += `
-                        <div class="checklist-item">
-                            <div class="chk-left ${isChecked ? 'checked' : ''}" onclick="toggleChecklist(${item.id}, ${!isChecked})">
-                                <input type="checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); toggleChecklist(${item.id}, this.checked)">
-                                <span>${item.item_name}</span>
-                            </div>
-                            <button class="btn-mini-delete" onclick="deleteChecklistItem(${item.id})">🗑️</button>
-                        </div>
-                    `;
+                    html += '<div class="checklist-item">'
+                         + '<div class="chk-left ' + (isChecked ? 'checked' : '') + '" onclick="toggleChecklist(' + item.id + ', ' + (!isChecked) + ')">'
+                         + '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleChecklist(' + item.id + ', this.checked)">'
+                         + '<span>' + item.item_name + '</span>'
+                         + '</div>'
+                         + '<button class="btn-mini-delete" onclick="deleteChecklistItem(' + item.id + ')">🗑️</button>'
+                         + '</div>';
                 });
                 html += `</div>`;
             }
