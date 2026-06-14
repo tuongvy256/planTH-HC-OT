@@ -680,7 +680,7 @@ function getHtmlContent() {
                 html += '<div class="timeline-card">'
                      + '<div class="card-top">'
                      + '<span class="time-badge">🕒 ' + (item.time_slot || 'Chưa định giờ') + '</span>'
-                     + '<span class="status-badge ' + statusClass + '" onclick="quickToggleStatus(' + item.id + ', \'' + item.status + '\')">'
+                     + '<span class="status-badge ' + statusClass + '" onclick="quickToggleStatus(' + item.id + ')">'
                      + (item.status || 'Chưa đi') + ' ' + motionIcon
                      + '</span>'
                      + '</div>'
@@ -808,22 +808,24 @@ function getHtmlContent() {
             fetchAllData();
         }
 
-        async function quickToggleStatus(id, currentStatus) {
-            let nextStatus = 'Chưa đi';
-            if(currentStatus === 'Chưa đi') nextStatus = 'Đang đi';
-            else if(currentStatus === 'Đang đi') nextStatus = 'Đã xong';
+        async function quickToggleStatus(id) {
+    const item = globalTimelineData.find(x => x.id === id);
+    if(!item) return;
 
-            const item = globalTimelineData.find(x => x.id === id);
-            if(!item) return;
+    let nextStatus = 'Chưa đi';
+    if(item.status === 'Chưa đi') nextStatus = 'Đang đi';
+    else if(item.status === 'Đang đi') nextStatus = 'Đã xong';
 
-            const payload = { ...item, status: nextStatus };
-            await fetch('/api/timeline/' + id, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            fetchAllData();
-        }
+    const payload = { ...item, status: nextStatus };
+
+    await fetch('/api/timeline/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    fetchAllData();
+}
 
         async function deleteTimeline(id) {
             if(confirm("Bà có chắc muốn xóa điểm lịch trình này không dọ?")) {
