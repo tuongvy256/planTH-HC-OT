@@ -663,7 +663,7 @@ function getHtmlContent() {
             const filtered = globalTimelineData.filter(item => item.day_number === currentDay);
 
             if(filtered.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-sub); font-size:0.9rem;">Hôm nay trống lịch rồi bà ơi, bấm nút ＋ góc dưới để thêm điểm đi nha!</div>`;
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-sub); font-size:0.9rem;">Hôm nay trống lịch rồi bà ơi, bấm nút ＋ góc dưới để thêm điểm đi nha!</div>';
                 return;
             }
 
@@ -702,7 +702,7 @@ function getHtmlContent() {
         function renderChecklist() {
             const container = document.getElementById('checklistContainer');
             if(globalChecklistData.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-sub); font-size:0.9rem;">Chưa soạn món nào hết trơn! Bấm "Thêm đồ" đi bà.</div>`;
+                container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-sub); font-size:0.9rem;">Chưa soạn món nào hết trơn! Bấm "Thêm đồ" đi bà.</div>';
                 return;
             }
 
@@ -715,7 +715,7 @@ function getHtmlContent() {
 
             let html = '';
             for(const cat in groups) {
-                html += `<div class="checklist-group"><div class="group-title">${cat}</div>`;
+                html += '<div class="checklist-group"><div class="group-title">' + cat + '</div>';
                 groups[cat].forEach(item => {
                     const isChecked = item.is_checked === 1;
                     html += '<div class="checklist-item">'
@@ -726,7 +726,7 @@ function getHtmlContent() {
                          + '<button class="btn-mini-delete" onclick="deleteChecklistItem(' + item.id + ')">🗑️</button>'
                          + '</div>';
                 });
-                html += `</div>`;
+                html += '</div>';
             }
             container.innerHTML = html;
         }
