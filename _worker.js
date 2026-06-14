@@ -1,18 +1,16 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const db = env.DB; // Binding tên là DB trong Cloudflare
+    const db = env.DB; // Binding cơ sở dữ liệu D1
 
-    // RENDER FRONTEND
+    // RENDER GIAO DIỆN FRONTEND
     if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
       return new Response(getHtmlContent(), {
         headers: { "Content-Type": "text/html;charset=UTF-8" }
       });
     }
 
-    // --- API ENDPOINTS ---
-
-    // 1. Lấy toàn bộ dữ liệu (Timeline + Checklist)
+    // --- CÁC ĐƯỜNG DẪN API XỬ LÝ DỮ LIỆU ---
     if (request.method === "GET" && url.pathname === "/api/data") {
       try {
         const { results: timeline } = await db.prepare("SELECT * FROM timeline ORDER BY day_number ASC, id ASC").all();
@@ -23,7 +21,6 @@ export default {
       }
     }
 
-    // 2. Thêm mới một địa điểm/lịch trình
     if (request.method === "POST" && url.pathname === "/api/timeline") {
       try {
         const data = await request.json();
@@ -41,7 +38,6 @@ export default {
       }
     }
 
-    // 3. Cập nhật một địa điểm (Sửa thông tin, đổi trạng thái, nhập tiền thực tế)
     if (request.method === "PUT" && url.pathname.startsWith("/api/timeline/")) {
       try {
         const id = url.pathname.split("/").pop();
@@ -61,14 +57,12 @@ export default {
       }
     }
 
-    // 4. Xóa một địa điểm khỏi Plan
     if (request.method === "DELETE" && url.pathname.startsWith("/api/timeline/")) {
       const id = url.pathname.split("/").pop();
       await db.prepare("DELETE FROM timeline WHERE id = ?").bind(id).run();
       return jsonResponse({ success: true });
     }
 
-    // 5. Thêm món đồ vào Checklist
     if (request.method === "POST" && url.pathname === "/api/checklist") {
       const data = await request.json();
       await db.prepare("INSERT INTO checklist (category, item_name, is_checked) VALUES (?, ?, 0)")
@@ -76,7 +70,6 @@ export default {
       return jsonResponse({ success: true });
     }
 
-    // 6. Check/Uncheck món đồ
     if (request.method === "PUT" && url.pathname.startsWith("/api/checklist/")) {
       const id = url.pathname.split("/").pop();
       const data = await request.json();
@@ -84,7 +77,6 @@ export default {
       return jsonResponse({ success: true });
     }
 
-    // 7. Xóa món đồ khỏi Checklist
     if (request.method === "DELETE" && url.pathname.startsWith("/api/checklist/")) {
       const id = url.pathname.split("/").pop();
       await db.prepare("DELETE FROM checklist WHERE id = ?").bind(id).run();
@@ -102,7 +94,680 @@ function jsonResponse(data, status = 200) {
   });
 }
 
-// Hàm này sẽ nhúng toàn bộ mã nguồn của file index.html vào để chạy tập trung
 function getHtmlContent() {
-  return ``; 
+  return `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shanghai Travel Plan 🇨🇳</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --primary: #4f46e5;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --status-pending: #e5e7eb;
+            --status-active: #dbeafe;
+            --status-done: #dcfce7;
+            --status-cancelled: #fee2e2;
+            --text-pending: #4b5563;
+            --text-active: #2563eb;
+            --text-done: #16a34a;
+            --text-cancelled: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 80px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 20px 16px;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .budget-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: 16px;
+            backdrop-filter: blur(8px);
+        }
+
+        .budget-item text {
+            font-size: 11px;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .budget-item val {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .day-tab-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 12px 16px;
+            gap: 8px;
+            scroll-behavior: smooth;
+        }
+        
+        .day-tab-container::-webkit-scrollbar { display: none; }
+
+        .day-tab {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            border: 1px solid #e5e7eb;
+            color: var(--text-sub);
+        }
+
+        .day-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .content-section {
+            padding: 0 16px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border-left: 5px solid transparent;
+            position: relative;
+        }
+
+        .card.pending { border-left-color: var(--text-pending); }
+        .card.active { border-left-color: var(--text-active); background: #fbfcfe; }
+        .card.done { border-left-color: var(--text-done); opacity: 0.85; }
+        .card.cancelled { border-left-color: var(--text-cancelled); opacity: 0.6; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .time-badge {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary);
+            background: #e0e7ff;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .status-badge.pending { background: var(--status-pending); color: var(--text-pending); }
+        .status-badge.active { background: var(--status-active); color: var(--text-active); }
+        .status-badge.done { background: var(--status-done); color: var(--text-done); }
+        .status-badge.cancelled { background: var(--status-cancelled); color: var(--text-cancelled); }
+
+        .location-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            background: #f3f4f6;
+            color: #374151;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .card-content {
+            font-size: 13px;
+            color: #374151;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #f3f4f6;
+            font-size: 12px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .checklist-group {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .checklist-group-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-sub);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .checklist-item:last-child { border-bottom: none; }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: white;
+            display: flex;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 200;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: var(--primary);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+            z-index: 150;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            z-index: 300;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding: 20px 16px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            <span>Shanghai Trip 🇨🇳</span>
+            <span style="font-size: 14px; opacity: 0.9;">31/8 - 5/9</span>
+        </div>
+        <div class="budget-grid">
+            <div class="budget-item">
+                <text>DỰ KIẾN TỔNG</text>
+                <val id="total-est">0 ¥</val>
+            </div>
+            <div class="budget-item">
+                <text>THỰC TẾ ĐÃ CHI</text>
+                <val id="total-real">0 ¥</val>
+            </div>
+        </div>
+    </header>
+
+    <div id="page-timeline" class="page-view">
+        <div class="day-tab-container" id="day-tabs"></div>
+        <div class="content-section" id="timeline-list"></div>
+    </div>
+
+    <div id="page-checklist" class="page-view" style="display: none; padding-top: 16px;">
+        <div class="content-section" id="checklist-content"></div>
+    </div>
+
+    <div class="fab" onclick="openModal()">+</div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('timeline', this)">
+            <span class="nav-icon">🗺️</span>
+            <span>Lịch trình</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('checklist', this)">
+            <span class="nav-icon">💼</span>
+            <span>Hành lý</span>
+        </div>
+    </nav>
+
+    <div class="modal" id="form-modal" onclick="if(event.target===this) closeModal()">
+        <div class="modal-content">
+            <h3 id="modal-title" style="margin-bottom: 16px;">Thêm vị trí mới</h3>
+            <form id="plan-form" onsubmit="saveData(event)">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label>Ngày thứ mấy (0 - 6)</label>
+                    <input type="number" id="form-day" min="0" max="6" required>
+                </div>
+                <div class="form-group">
+                    <label>Thời gian</label>
+                    <input type="text" id="form-time" placeholder="Ví dụ: 08:30 - 10:00">
+                </div>
+                <div class="form-group">
+                    <label>Tên địa điểm (Tiếng Việt)</label>
+                    <input type="text" id="form-location" required>
+                </div>
+                <div class="form-group">
+                    <label>Tên tiếng Trung (Để kích hoạt App Map)</label>
+                    <input type="text" id="form-location-zh" placeholder="Ví dụ: 外滩">
+                </div>
+                <div class="form-group">
+                    <label>Nội dung chi tiết lịch trình</label>
+                    <textarea id="form-content" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Phương tiện di chuyển</label>
+                    <input type="text" id="form-transport" placeholder="Ví dụ: Metro Line 2">
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>Dự kiến (¥)</label>
+                        <input type="number" step="any" id="form-cost-est">
+                    </div>
+                    <div>
+                        <label>Thực tế chi (¥)</label>
+                        <input type="number" step="any" id="form-cost-real">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select id="form-status">
+                        <option value="pending">Chưa đi (Pending)</option>
+                        <option value="active">Đang đi (Active)</option>
+                        <option value="done">Đã đi (Done)</option>
+                        <option value="cancelled">Đã hủy / Bỏ qua (Cancelled)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ghi chú quan trọng</label>
+                    <input type="text" id="form-notes">
+                </div>
+                <button type="submit" class="btn-submit">Lưu lại ngay</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let appData = { timeline: [], checklist: [] };
+        let currentSelectedDay = 1;
+
+        function openMap(geoName) {
+            if (!geoName) return;
+            const encodedName = encodeURIComponent(geoName);
+            const amapUrl = \`gaodeLBS://search?keyword=\${encodedName}\`;
+            const baiduUrl = \`baidumap://map/search?query=\${encodedName}\`;
+            const appleUrl = \`http://maps.apple.com/?q=\${encodedName}\`;
+            const start = Date.now();
+            window.location.href = amapUrl;
+            setTimeout(() => {
+                if (Date.now() - start < 1800) {
+                    const startBaidu = Date.now();
+                    window.location.href = baiduUrl;
+                    setTimeout(() => {
+                        if (Date.now() - startBaidu < 1800) {
+                            window.location.href = appleUrl;
+                        }
+                    }, 1500);
+                }
+            }, 1500);
+        }
+
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.page-view').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('page-' + pageId).style.display = 'block';
+            element.classList.add('active');
+            if(pageId === 'checklist') {
+                document.querySelector('.fab').setAttribute('onclick', 'openChecklistModal()');
+            } else {
+                document.querySelector('.fab').setAttribute('onclick', 'openModal()');
+            }
+        }
+
+        async function fetchAllData() {
+            try {
+                const res = await fetch('/api/data');
+                appData = await res.json();
+                calculateBudget();
+                renderTabs();
+                renderTimeline();
+                renderChecklist();
+            } catch (err) {
+                console.error("Lỗi lấy thông tin data:", err);
+            }
+        }
+
+        function calculateBudget() {
+            let totalEst = appData.timeline.reduce((sum, item) => sum + (item.cost_est || 0), 0);
+            let totalReal = appData.timeline.reduce((sum, item) => sum + (item.cost_real || 0), 0);
+            document.getElementById('total-est').innerText = totalEst.toLocaleString() + ' ¥';
+            document.getElementById('total-real').innerText = totalReal.toLocaleString() + ' ¥';
+        }
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('day-tabs');
+            tabsContainer.innerHTML = '';
+            for (let i = 0; i <= 6; i++) {
+                const btn = document.createElement('button');
+                btn.className = \`day-tab \${currentSelectedDay === i ? 'active' : ''}\`;
+                btn.innerText = \`Ngày \${i}\`;
+                btn.onclick = () => {
+                    currentSelectedDay = i;
+                    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderTimeline();
+                };
+                tabsContainer.appendChild(btn);
+            }
+        }
+
+        function renderTimeline() {
+            const listContainer = document.getElementById('timeline-list');
+            listContainer.innerHTML = '';
+            const filtered = appData.timeline.filter(item => item.day_number === currentSelectedDay);
+            if(filtered.length === 0) {
+                listContainer.innerHTML = \`<div style="text-align:center;color:var(--text-sub);padding:40px 0;font-size:14px;">Ngày này hiện tại chưa nhập dữ liệu plan nào hết nha bà ơi, bấm dấu (+) để thêm nha!</div>\`;
+                return;
+            }
+            filtered.forEach(item => {
+                const div = document.createElement('div');
+                div.className = \`card \${item.status}\`;
+                let mapBtnHtml = item.location_zh ? \`<a href="#" class="map-btn" onclick="openMap('\${item.location_zh}'); return false;">📍 Mở Map: \${item.location_zh}</a>\` : '';
+                let transportHtml = item.transport ? \`<div style="margin-top:4px; font-size:12px; color:var(--primary)">🚗 Di chuyển: \${item.transport}</div>\` : '';
+                let notesHtml = item.notes ? \`<div style="margin-top:6px; font-size:12px; color: #b45309; background:#fffbeb; padding:4px 8px; border-radius:4px;">⚠️ \${item.notes}</div>\` : '';
+                div.innerHTML = \`
+                    <div class="card-header">
+                        <span class="time-badge">\${item.time_slot || 'Không cố định'}</span>
+                        <span class="status-badge \${item.status}">\${getStatusText(item.status)}</span>
+                    </div>
+                    <div class="location-title">\${item.location}</div>
+                    \${mapBtnHtml}
+                    <div class="card-content">\${item.content || ''}</div>
+                    \${transportHtml}
+                    \${notesHtml}
+                    <div class="card-footer">
+                        <div>
+                            <span style="margin-right:8px; color:var(--text-sub)">Dự kiến: <b>\${item.cost_est || 0}¥</b></span>
+                            <span style="color:var(--text-main)">Thực tế: <b style="color:#16a34a">\${item.cost_real || 0}¥</b></span>
+                        </div>
+                        <div>
+                            <button class="action-btn" onclick="editTimeline(\${item.id})">Sửa / Chi Phí</button>
+                            <button class="action-btn" style="color:#dc2626; margin-left:10px" onclick="deleteTimeline(\${item.id})">Xóa</button>
+                        </div>
+                    </div>
+\`;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function getStatusText(status) {
+            if(status === 'active') return 'Đang đi';
+            if(status === 'done') return 'Đã xong';
+            if(status === 'cancelled') return 'Đã hủy';
+            return 'Chưa đi';
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById('checklist-content');
+            container.innerHTML = '';
+            const groups = {};
+            appData.checklist.forEach(item => {
+                if(!groups[item.category]) groups[item.category] = [];
+                groups[item.category].push(item);
+            });
+            for(let cat in groups) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'checklist-group';
+                groupDiv.innerHTML = \`<div class="checklist-group-title">\${cat}</div>\`;
+                groups[cat].forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'checklist-item';
+                    itemDiv.innerHTML = \`
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" \${item.is_checked ? 'checked' : ''} onchange="toggleChecklist(\${item.id}, this.checked)">
+                            <span style="\${item.is_checked ? 'text-decoration:line-through; color:var(--text-sub)' : ''}">\${item.item_name}</span>
+                        </div>
+                        <button style="border:none; background:none; color:#dc2626; font-size:12px" onclick="deleteChecklistItem(\${item.id})">Xóa</button>
+\`;
+                    groupDiv.appendChild(itemDiv);
+                });
+                container.appendChild(groupDiv);
+            }
+        }
+
+        function openModal() {
+            document.getElementById('plan-form').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('form-day').value = currentSelectedDay;
+            document.getElementById('modal-title').innerText = "Thêm vị trí mới";
+            document.getElementById('form-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('form-modal').style.display = 'none';
+        }
+
+        function editTimeline(id) {
+            const item = appData.timeline.find(t => t.id === id);
+            if(!item) return;
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('form-day').value = item.day_number;
+            document.getElementById('form-time').value = item.time_slot;
+            document.getElementById('form-location').value = item.location;
+            document.getElementById('form-location-zh').value = item.location_zh;
+            document.getElementById('form-content').value = item.content;
+            document.getElementById('form-transport').value = item.transport;
+            document.getElementById('form-cost-est').value = item.cost_est;
+            document.getElementById('form-cost-real').value = item.cost_real;
+            document.getElementById('form-status').value = item.status;
+            document.getElementById('form-notes').value = item.notes;
+            document.getElementById('modal-title').innerText = "Cập nhật / Sửa hành trình";
+            document.getElementById('form-modal').style.display = 'flex';
+        }
+
+        async function saveData(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const payload = {
+                day_number: parseInt(document.getElementById('form-day').value),
+                time_slot: document.getElementById('form-time').value,
+                location: document.getElementById('form-location').value,
+                location_zh: document.getElementById('form-location-zh').value,
+                content: document.getElementById('form-content').value,
+                transport: document.getElementById('form-transport').value,
+                cost_est: parseFloat(document.getElementById('form-cost-est').value || 0),
+                cost_real: parseFloat(document.getElementById('form-cost-real').value || 0),
+                status: document.getElementById('form-status').value,
+                notes: document.getElementById('form-notes').value
+            };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? \`/api/timeline/\${id}\` : '/api/timeline';
+            await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            closeModal();
+            fetchAllData();
+        }
+
+        async function deleteTimeline(id) {
+            if(confirm("Bà có chắc muốn xóa điểm lịch trình này không?")) {
+                await fetch(\`/api/timeline/\${id}\`, { method: 'DELETE' });
+                fetchAllData();
+            }
+        }
+
+        async function toggleChecklist(id, isChecked) {
+            await fetch(\`/api/checklist/\${id}\`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ is_checked: isChecked ? 1 : 0 })
+            });
+            fetchAllData();
+        }
+
+        function openChecklistModal() {
+            const cat = prompt("Nhập danh mục hành lý (Ví dụ: Giấy tờ, Đồ điện tử, Thuốc men...):");
+            if(!cat) return;
+            const item = prompt("Nhập tên đồ vật cần mang theo:");
+            if(!item) return;
+            fetch('/api/checklist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category: cat, item_name: item })
+            }).then(() => fetchAllData());
+        }
+
+        async function deleteChecklistItem(id) {
+            if(confirm("Xóa món đồ này ra khỏi danh sách chuẩn bị nha bà?")) {
+                await fetch(\`/api/checklist/\${id}\`, { method: 'DELETE' });
+                fetchAllData();
+            }
+        }
+
+        window.onload = fetchAllData;
+    </script>
+</body>
+</html>`; 
 }
