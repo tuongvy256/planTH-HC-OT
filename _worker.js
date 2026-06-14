@@ -794,7 +794,7 @@ function getHtmlContent() {
             let url = '/api/timeline';
             let method = 'POST';
             if(id) {
-                url = `/api/timeline/${id}`;
+                url = '/api/timeline/' + id;
                 method = 'PUT';
             }
 
@@ -817,7 +817,7 @@ function getHtmlContent() {
             if(!item) return;
 
             const payload = { ...item, status: nextStatus };
-            await fetch(`/api/timeline/${id}`, {
+            await fetch('/api/timeline/' + id, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -827,7 +827,7 @@ function getHtmlContent() {
 
         async function deleteTimeline(id) {
             if(confirm("Bà có chắc muốn xóa điểm lịch trình này không dọ?")) {
-                await fetch(`/api/timeline/${id}`, { method: 'DELETE' });
+                await fetch('/api/timeline/' + id, { method: 'DELETE' });
                 fetchAllData();
             }
         }
@@ -858,7 +858,7 @@ function getHtmlContent() {
         }
 
         async function toggleChecklist(id, isChecked) {
-            await fetch(`/api/checklist/${id}`, {
+            await fetch('/api/checklist/' + id, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ is_checked: isChecked ? 1 : 0 })
@@ -868,7 +868,7 @@ function getHtmlContent() {
 
         async function deleteChecklistItem(id) {
             if(confirm("Xóa món đồ này ra khỏi danh sách chuẩn bị nha bà iu?")) {
-                await fetch(`/api/checklist/${id}`, { method: 'DELETE' });
+                await fetch('/api/checklist/' + id, { method: 'DELETE' });
                 fetchAllData();
             }
         }
