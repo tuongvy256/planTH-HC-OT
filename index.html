@@ -35,7 +35,6 @@
             padding-bottom: 80px;
         }
 
-        /* Header & Budget Panel */
         header {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
@@ -78,7 +77,6 @@
             font-weight: bold;
         }
 
-        /* Day Selector Tab (Xoay ngang lướt trên Mobile) */
         .day-tab-container {
             display: flex;
             overflow-x: auto;
@@ -106,12 +104,10 @@
             border-color: var(--primary);
         }
 
-        /* Main Content Container */
         .content-section {
             padding: 0 16px;
         }
 
-        /* Card Lịch Trình */
         .card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -197,7 +193,6 @@
             font-size: 12px;
         }
 
-        /* Checklist UI */
         .checklist-group {
             background: white;
             border-radius: 16px;
@@ -236,7 +231,6 @@
             accent-color: var(--primary);
         }
 
-        /* Bottom Nav Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -269,7 +263,6 @@
             margin-bottom: 2px;
         }
 
-        /* Fab Button (Nút Tròn Thêm Mới) */
         .fab {
             position: fixed;
             bottom: 80px;
@@ -287,7 +280,6 @@
             z-index: 150;
         }
 
-        /* Modal tùy chỉnh */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -360,15 +352,12 @@
     </header>
 
     <div id="page-timeline" class="page-view">
-        <div class="day-tab-container" id="day-tabs">
-            </div>
-        <div class="content-section" id="timeline-list">
-            </div>
+        <div class="day-tab-container" id="day-tabs"></div>
+        <div class="content-section" id="timeline-list"></div>
     </div>
 
     <div id="page-checklist" class="page-view" style="display: none; padding-top: 16px;">
-        <div class="content-section" id="checklist-content">
-            </div>
+        <div class="content-section" id="checklist-content"></div>
     </div>
 
     <div class="fab" onclick="openModal()">+</div>
@@ -445,30 +434,19 @@
         let appData = { timeline: [], checklist: [] };
         let currentSelectedDay = 1;
 
-        // Hàm mở bản đồ đa nền tảng tối ưu hoá sâu trên iPhone (iOS)
         function openMap(geoName) {
             if (!geoName) return;
             const encodedName = encodeURIComponent(geoName);
-            
-            // Tạo chuỗi Deep Link ưu tiên cho iOS
-            const amapUrl = `gaodeLBS://search?keyword=\${encodedName}`;
-            const baiduUrl = `baidumap://map/search?query=\${encodedName}`;
-            const appleUrl = `http://maps.apple.com/?q=\${encodedName}`;
-
-            // Tạo biến mốc thời gian để theo dõi xem thiết bị có bật được app nội địa không
+            const amapUrl = `gaodeLBS://search?keyword=${encodedName}`;
+            const baiduUrl = `baidumap://map/search?query=${encodedName}`;
+            const appleUrl = `http://maps.apple.com/?q=${encodedName}`;
             const start = Date.now();
-            
-            // Cố gắng kích hoạt Amap trước
             window.location.href = amapUrl;
-            
             setTimeout(() => {
-                // Nếu sau 1.5 giây hệ thống không rời khỏi trình duyệt (nghĩa là không có App Amap)
                 if (Date.now() - start < 1800) {
                     const startBaidu = Date.now();
-                    window.location.href = baiduUrl; // Thử kích hoạt Baidu Map
-                    
+                    window.location.href = baiduUrl;
                     setTimeout(() => {
-                        // Nếu vẫn không có Baidu Map, nhảy về Apple Maps mặc định của iPhone
                         if (Date.now() - startBaidu < 1800) {
                             window.location.href = appleUrl;
                         }
@@ -477,14 +455,11 @@
             }, 1500);
         }
 
-        // Chuyển đổi giữa Tab Lịch trình và Tab Checklist hành lý dưới chân màn hình
         function switchPage(pageId, element) {
             document.querySelectorAll('.page-view').forEach(p => p.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
             document.getElementById('page-' + pageId).style.display = 'block';
             element.classList.add('active');
-            
             if(pageId === 'checklist') {
                 document.querySelector('.fab').setAttribute('onclick', 'openChecklistModal()');
             } else {
@@ -492,7 +467,6 @@
             }
         }
 
-        // Tải dữ liệu từ hệ thống Cloudflare Worker D1 API
         async function fetchAllData() {
             try {
                 const res = await fetch('/api/data');
@@ -516,12 +490,10 @@
         function renderTabs() {
             const tabsContainer = document.getElementById('day-tabs');
             tabsContainer.innerHTML = '';
-            
-            // Tạo 7 nút Tab tương ứng từ Ngày 0 tới Ngày 6
             for (let i = 0; i <= 6; i++) {
                 const btn = document.createElement('button');
-                btn.className = `day-tab \${currentSelectedDay === i ? 'active' : ''}`;
-                btn.innerText = `Ngày \${i}`;
+                btn.className = `day-tab ${currentSelectedDay === i ? 'active' : ''}`;
+                btn.innerText = `Ngày ${i}`;
                 btn.onclick = () => {
                     currentSelectedDay = i;
                     document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
@@ -535,40 +507,35 @@
         function renderTimeline() {
             const listContainer = document.getElementById('timeline-list');
             listContainer.innerHTML = '';
-
             const filtered = appData.timeline.filter(item => item.day_number === currentSelectedDay);
-
             if(filtered.length === 0) {
                 listContainer.innerHTML = `<div style="text-align:center;color:var(--text-sub);padding:40px 0;font-size:14px;">Ngày này hiện tại chưa nhập dữ liệu plan nào hết nha bà ơi, bấm dấu (+) để thêm nha!</div>`;
                 return;
             }
-
             filtered.forEach(item => {
                 const div = document.createElement('div');
-                div.className = `card \${item.status}`;
-                
-                let mapBtnHtml = item.location_zh ? `<a href="#" class="map-btn" onclick="openMap('\${item.location_zh}'); return false;">📍 Mở Map: \${item.location_zh}</a>` : '';
-                let transportHtml = item.transport ? `<div style="margin-top:4px; font-size:12px; color:var(--primary)">🚗 Di chuyển: \${item.transport}</div>` : '';
-                let notesHtml = item.notes ? `<div style="margin-top:6px; font-size:12px; color: #b45309; background:#fffbeb; padding:4px 8px; border-radius:4px;">⚠️ \${item.notes}</div>` : '';
-
+                div.className = `card ${item.status}`;
+                let mapBtnHtml = item.location_zh ? `<a href="#" class="map-btn" onclick="openMap('${item.location_zh}'); return false;">📍 Mở Map: ${item.location_zh}</a>` : '';
+                let transportHtml = item.transport ? `<div style="margin-top:4px; font-size:12px; color:var(--primary)">🚗 Di chuyển: ${item.transport}</div>` : '';
+                let notesHtml = item.notes ? `<div style="margin-top:6px; font-size:12px; color: #b45309; background:#fffbeb; padding:4px 8px; border-radius:4px;">⚠️ ${item.notes}</div>` : '';
                 div.innerHTML = `
                     <div class="card-header">
-                        <span class="time-badge">\${item.time_slot || 'Không cố định'}</span>
-                        <span class="status-badge \${item.status}">\${getStatusText(item.status)}</span>
+                        <span class="time-badge">${item.time_slot || 'Không cố định'}</span>
+                        <span class="status-badge ${item.status}">${getStatusText(item.status)}</span>
                     </div>
-                    <div class="location-title">\${item.location}</div>
-                    \${mapBtnHtml}
-                    <div class="card-content">\${item.content || ''}</div>
-                    \${transportHtml}
-                    \${notesHtml}
+                    <div class="location-title">${item.location}</div>
+                    ${mapBtnHtml}
+                    <div class="card-content">${item.content || ''}</div>
+                    ${transportHtml}
+                    ${notesHtml}
                     <div class="card-footer">
                         <div>
-                            <span style="margin-right:8px; color:var(--text-sub)">Dự kiến: <b>\${item.cost_est || 0}¥</b></span>
-                            <span style="color:var(--text-main)">Thực tế: <b style="color:#16a34a">\${item.cost_real || 0}¥</b></span>
+                            <span style="margin-right:8px; color:var(--text-sub)">Dự kiến: <b>${item.cost_est || 0}¥</b></span>
+                            <span style="color:var(--text-main)">Thực tế: <b style="color:#16a34a">${item.cost_real || 0}¥</b></span>
                         </div>
                         <div>
-                            <button class="action-btn" onclick="editTimeline(\${item.id})">Sửa / Chi Phí</button>
-                            <button class="action-btn" style="color:#dc2626; margin-left:10px" onclick="deleteTimeline(\${item.id})">Xóa</button>
+                            <button class="action-btn" onclick="editTimeline(${item.id})">Sửa / Chi Phí</button>
+                            <button class="action-btn" style="color:#dc2626; margin-left:10px" onclick="deleteTimeline(${item.id})">Xóa</button>
                         </div>
                     </div>
                 `;
@@ -586,28 +553,24 @@
         function renderChecklist() {
             const container = document.getElementById('checklist-content');
             container.innerHTML = '';
-
-            // Nhóm đồ vật theo danh mục chuẩn bị
             const groups = {};
             appData.checklist.forEach(item => {
                 if(!groups[item.category]) groups[item.category] = [];
                 groups[item.category].push(item);
             });
-
             for(let cat in groups) {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'checklist-group';
-                groupDiv.innerHTML = `<div class="checklist-group-title">\${cat}</div>`;
-
+                groupDiv.innerHTML = `<div class="checklist-group-title">${cat}</div>`;
                 groups[cat].forEach(item => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'checklist-item';
                     itemDiv.innerHTML = `
                         <div class="checkbox-wrapper">
-                            <input type="checkbox" \${item.is_checked ? 'checked' : ''} onchange="toggleChecklist(\${item.id}, this.checked)">
-                            <span style="\${item.is_checked ? 'text-decoration:line-through; color:var(--text-sub)' : ''}">\${item.item_name}</span>
+                            <input type="checkbox" ${item.is_checked ? 'checked' : ''} onchange="toggleChecklist(${item.id}, this.checked)">
+                            <span style="${item.is_checked ? 'text-decoration:line-through; color:var(--text-sub)' : ''}">${item.item_name}</span>
                         </div>
-                        <button style="border:none; background:none; color:#dc2626; font-size:12px" onclick="deleteChecklistItem(\${item.id})">Xóa</button>
+                        <button style="border:none; background:none; color:#dc2626; font-size:12px" onclick="deleteChecklistItem(${item.id})">Xóa</button>
                     `;
                     groupDiv.appendChild(itemDiv);
                 });
@@ -615,7 +578,6 @@
             }
         }
 
-        // Điều khiển các cổng gọi dữ liệu lên Cloudflare API
         function openModal() {
             document.getElementById('plan-form').reset();
             document.getElementById('edit-id').value = '';
@@ -631,7 +593,6 @@
         function editTimeline(id) {
             const item = appData.timeline.find(t => t.id === id);
             if(!item) return;
-
             document.getElementById('edit-id').value = item.id;
             document.getElementById('form-day').value = item.day_number;
             document.getElementById('form-time').value = item.time_slot;
@@ -643,7 +604,6 @@
             document.getElementById('form-cost-real').value = item.cost_real;
             document.getElementById('form-status').value = item.status;
             document.getElementById('form-notes').value = item.notes;
-
             document.getElementById('modal-title').innerText = "Cập nhật / Sửa hành trình";
             document.getElementById('form-modal').style.display = 'flex';
         }
@@ -663,29 +623,26 @@
                 status: document.getElementById('form-status').value,
                 notes: document.getElementById('form-notes').value
             };
-
             const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/timeline/\${id}` : '/api/timeline';
-
+            const url = id ? `/api/timeline/${id}` : '/api/timeline';
             await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
             closeModal();
             fetchAllData();
         }
 
         async function deleteTimeline(id) {
             if(confirm("Bà có chắc muốn xóa điểm lịch trình này không?")) {
-                await fetch(`/api/timeline/\${id}`, { method: 'DELETE' });
+                await fetch(`/api/timeline/${id}`, { method: 'DELETE' });
                 fetchAllData();
             }
         }
 
         async function toggleChecklist(id, isChecked) {
-            await fetch(`/api/checklist/\${id}`, {
+            await fetch(`/api/checklist/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ is_checked: isChecked ? 1 : 0 })
@@ -698,7 +655,6 @@
             if(!cat) return;
             const item = prompt("Nhập tên đồ vật cần mang theo:");
             if(!item) return;
-
             fetch('/api/checklist', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -708,12 +664,11 @@
 
         async function deleteChecklistItem(id) {
             if(confirm("Xóa món đồ này ra khỏi danh sách chuẩn bị nha bà?")) {
-                await fetch(`/api/checklist/\${id}`, { method: 'DELETE' });
+                await fetch(`/api/checklist/${id}`, { method: 'DELETE' });
                 fetchAllData();
             }
         }
 
-        // Tự động kích hoạt gọi nạp dữ liệu khi bật ứng dụng web
         window.onload = fetchAllData;
     </script>
 </body>
