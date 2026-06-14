@@ -688,7 +688,7 @@ function getHtmlContent() {
                      + item.location
                      + '</div>'
                      + (item.location_zh ? '<div class="location-zh">🇨🇳 ' + item.location_zh + '</div>' : '')
-                     + (item.content ? '<div class="card-content">' + item.content.replace(/\n/g, '<br>') + '</div>' : '')
+                     + (item.content ? '<div class="card-content">' + item.content.split('\n').join('<br>') + '</div>' : '')
                      + '<div class="card-meta">'
                      + '<div class="meta-item">🚇 ' + (item.transport || 'Tự túc') + '</div>'
                      + '<div class="meta-item" style="color:var(--text-main); font-weight:700;">💰 ' + (item.cost_real > 0 ? item.cost_real : item.cost_est) + ' Tệ</div>'
