@@ -539,6 +539,349 @@ textarea{
 
 let currentDay = 1;
 
+let allTimeline = [];
+let allChecklist = [];
+
+document.addEventListener(
+    'DOMContentLoaded',
+    init
+);
+
+async function init() {
+
+    buildDayButtons();
+
+    buildDaySelect();
+
+    await loadData();
+
+}
+
+function switchTab(tab) {
+
+    document
+        .querySelectorAll('.tab-content')
+        .forEach(x => x.classList.remove('active'));
+
+    document
+        .querySelectorAll('.tab-btn')
+        .forEach(x => x.classList.remove('active'));
+
+    if(tab === 'timeline') {
+
+        document
+            .getElementById('timelineTab')
+            .classList.add('active');
+
+        document
+            .querySelectorAll('.tab-btn')[0]
+            .classList.add('active');
+
+    }
+
+    if(tab === 'checklist') {
+
+        document
+            .getElementById('checklistTab')
+            .classList.add('active');
+
+        document
+            .querySelectorAll('.tab-btn')[1]
+            .classList.add('active');
+
+    }
+
+    if(tab === 'cost') {
+
+        document
+            .getElementById('costTab')
+            .classList.add('active');
+
+        document
+            .querySelectorAll('.tab-btn')[2]
+            .classList.add('active');
+
+    }
+
+}
+
+function buildDayButtons() {
+
+    let html = '';
+
+    for(let i=1;i<=10;i++) {
+
+        html += `
+        <button
+            class="day-btn ${i===1?'active':''}"
+            onclick="changeDay(${i})">
+            Ngày ${i}
+        </button>
+        `;
+
+    }
+
+    document
+        .getElementById('daySelector')
+        .innerHTML = html;
+
+}
+
+function buildDaySelect() {
+
+    let html='';
+
+    for(let i=1;i<=10;i++) {
+
+        html += `
+        <option value="${i}">
+            Ngày ${i}
+        </option>
+        `;
+
+    }
+
+    document
+        .getElementById('dayNumber')
+        .innerHTML = html;
+
+}
+
+function changeDay(day) {
+
+    currentDay = day;
+
+    document
+        .querySelectorAll('.day-btn')
+        .forEach(btn =>
+            btn.classList.remove('active')
+        );
+
+    document
+        .querySelectorAll('.day-btn')[day-1]
+        .classList.add('active');
+
+    renderTimeline();
+
+}
+
+async function loadData() {
+
+    const res =
+        await fetch('/api/data');
+
+    const data =
+        await res.json();
+
+    allTimeline =
+        data.timeline || [];
+
+    allChecklist =
+        data.checklist || [];
+
+    renderTimeline();
+
+    renderChecklist();
+
+    renderCost();
+
+}
+
+function renderTimeline() {
+
+    const container =
+        document.getElementById(
+            'timelineContainer'
+        );
+
+    const items =
+        allTimeline.filter(
+            x => Number(x.day_number)
+            === currentDay
+        );
+
+    if(items.length === 0) {
+
+        container.innerHTML = `
+        <div class="timeline-card">
+            Chưa có lịch trình
+        </div>
+        `;
+
+        return;
+
+    }
+
+    let html = '';
+
+    items.forEach(item => {
+
+        html += `
+        <div class="timeline-card">
+
+            <div class="card-top">
+
+                <div class="time-badge">
+                    🕒 ${item.time_slot || ''}
+                </div>
+
+                <div class="status ${
+                    item.status === 'Đã xong'
+                    ? 'done'
+                    : 'pending'
+                }">
+
+                    ${item.status}
+
+                </div>
+
+            </div>
+
+            <div class="location">
+
+                ${item.location}
+
+            </div>
+
+            <div class="location-zh">
+
+                ${item.location_zh || ''}
+
+            </div>
+
+            <div class="content">
+
+                ${item.content || ''}
+
+            </div>
+
+        </div>
+        `;
+
+    });
+
+    container.innerHTML = html;
+
+}
+
+function renderChecklist() {
+
+    const container =
+        document.getElementById(
+            'checklistContainer'
+        );
+
+    const groups = [
+        '📄 Giấy tờ',
+        '👕 Quần áo',
+        '💄 Mỹ phẩm',
+        '🔌 Điện tử',
+        '💊 Thuốc men',
+        '🎒 Khác'
+    ];
+
+    let html='';
+
+    groups.forEach(group => {
+
+        html += `
+        <div class="checklist-group">
+
+            <div class="group-title">
+                ${group}
+            </div>
+        `;
+
+        allChecklist
+            .filter(x => x.category===group)
+            .forEach(item => {
+
+                html += `
+                <div class="check-item">
+
+                    <div>
+
+                        ${
+                            item.is_checked
+                            ? '✅'
+                            : '⬜'
+                        }
+
+                        ${item.item_name}
+
+                    </div>
+
+                </div>
+                `;
+
+            });
+
+        html += '</div>';
+
+    });
+
+    container.innerHTML = html;
+
+}
+
+function renderCost() {
+
+    const container =
+        document.getElementById(
+            'costContainer'
+        );
+
+    const est =
+        allTimeline.reduce(
+            (s,x)=>
+                s + Number(
+                    x.cost_est || 0
+                ),
+            0
+        );
+
+    const real =
+        allTimeline.reduce(
+            (s,x)=>
+                s + Number(
+                    x.cost_real || 0
+                ),
+            0
+        );
+
+    container.innerHTML = `
+
+    <div class="cost-card">
+        <div class="cost-title">
+            Dự kiến
+        </div>
+        <div class="cost-value">
+            ${est}
+        </div>
+    </div>
+
+    <div class="cost-card">
+        <div class="cost-title">
+            Thực tế
+        </div>
+        <div class="cost-value">
+            ${real}
+        </div>
+    </div>
+
+    <div class="cost-card">
+        <div class="cost-title">
+            Mỗi người
+        </div>
+        <div class="cost-value">
+            ${(real/2).toFixed(0)}
+        </div>
+    </div>
+
+    `;
+
+}
+
 </script>
 
 </body>
