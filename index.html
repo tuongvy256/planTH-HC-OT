@@ -10,7 +10,6 @@
     
     <style>
         :root {
-            /* Hệ màu Việt Quất & Sữa Khoai Môn Pastel */
             --bg-color: #f3f0f7; 
             --card-bg: #ffffff;
             --primary: #9d8df1;  
@@ -117,11 +116,6 @@
             box-shadow: 0 6px 12px rgba(157, 141, 241, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.8);
             position: relative;
-            transition: transform 0.2s ease;
-        }
-
-        .timeline-card:active {
-            transform: scale(0.98);
         }
 
         .card-top {
@@ -146,8 +140,6 @@
             font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
-            user-select: none;
-            transition: all 0.2s ease;
         }
         .status-badge.pending { background: var(--status-pending); color: var(--text-pending); }
         .status-badge.active { background: var(--status-active); color: var(--text-active); }
@@ -183,12 +175,6 @@
             color: var(--text-sub);
         }
 
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
         .checklist-group {
             background: var(--card-bg);
             border-radius: 24px;
@@ -214,48 +200,12 @@
             border-bottom: 1px dashed #f0eff5;
         }
 
-        .checklist-item:last-child {
-            border-bottom: none;
-        }
-
         .chk-left {
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 0.9rem;
             cursor: pointer;
-        }
-
-        .chk-left input[type="checkbox"] {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--secondary);
-            border-radius: 50%;
-            outline: none;
-            cursor: pointer;
-            display: grid;
-            place-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .chk-left input[type="checkbox"]::before {
-            content: "";
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            transform: scale(0);
-            transition: 0.2s transform ease-in-out;
-            background-color: white;
-        }
-
-        .chk-left input[type="checkbox"]:checked {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .chk-left input[type="checkbox"]:checked::before {
-            transform: scale(1);
         }
 
         .chk-left.checked span {
@@ -269,7 +219,6 @@
             color: #ff9ebb;
             cursor: pointer;
             font-size: 1rem;
-            padding: 2px 6px;
         }
 
         .fab-btn {
@@ -289,22 +238,8 @@
             align-items: center;
             justify-content: center;
             z-index: 99;
-            transition: transform 0.2s ease;
-        }
-        .fab-btn:active { transform: scale(0.9); }
-
-        .btn-add-text {
-            background: #f3f0f7;
-            border: 2px dashed var(--primary);
-            color: var(--primary-dark);
-            padding: 8px 16px;
-            border-radius: 16px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
         }
 
-        /* POPUP BOUNCE EFFECT */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -317,7 +252,6 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
-            padding: 16px;
         }
 
         .modal-overlay.active {
@@ -329,23 +263,8 @@
             background: var(--card-bg);
             border-radius: 30px;
             padding: 24px;
-            width: 100%;
+            width: 90%;
             max-width: 450px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            transform: scale(0.85) translateY(30px);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1) translateY(0);
-        }
-
-        .modal-header {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            text-align: center;
-            color: var(--primary-dark);
         }
 
         .form-group {
@@ -362,18 +281,10 @@
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px 14px;
+            padding: 10px;
             border: 2px solid #e8e6f0;
             border-radius: 14px;
-            font-family: inherit;
-            font-size: 0.9rem;
             outline: none;
-            color: var(--text-main);
-            transition: border-color 0.2s;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            border-color: var(--primary);
         }
 
         .modal-buttons {
@@ -387,18 +298,12 @@
             padding: 12px;
             border-radius: 14px;
             border: none;
-            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
         }
 
-        .btn-modal.cancel {
-            background: #f0eff5;
-            color: var(--text-sub);
-        }
-
         .btn-modal.save {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             color: white;
         }
     </style>
@@ -407,7 +312,7 @@
 
     <div class="header">
         <h1>Shanghai Travel Plan 🇨🇳</h1>
-        <p>Giao diện xinh xỉu cho bà iu quẩy Thượng Hải ✨</p>
+        <p>Giao diện Việt Quất & Sữa Khoai Môn siêu mượt ✨</p>
     </div>
 
     <div class="container">
@@ -417,7 +322,7 @@
 
         <div class="section-title">
             <span>Hành Lý Chuẩn Bị 🎒</span>
-            <button class="btn-add-text" onclick="openChecklistModal()">+ Thêm đồ</button>
+            <button style="background:none; border:none; color:var(--primary); font-weight:700;" onclick="openChecklistModal()">+ Thêm đồ</button>
         </div>
         <div id="checklistContainer"></div>
     </div>
@@ -426,38 +331,31 @@
 
     <div class="modal-overlay" id="timelineModal">
         <div class="modal-content">
-            <div class="modal-header" id="timelineModalTitle">Thêm Điểm Đi Mới ✨</div>
+            <h3 style="margin-bottom:15px; text-align:center;">Lịch Trình Đi Chơi</h3>
             <input type="hidden" id="formTimelineId">
             <div class="form-group">
                 <label>Ngày mấy nà?</label>
-                <select id="formDayNumber">
-                    <option value="1">Ngày 1 (31/8)</option>
-                    <option value="2">Ngày 2 (01/9)</option>
-                    <option value="3">Ngày 3 (02/9)</option>
-                    <option value="4">Ngày 4 (03/9)</option>
-                    <option value="5">Ngày 5 (04/9)</option>
-                    <option value="6">Ngày 6 (05/9)</option>
-                </select>
+                <input type="number" id="formDayNumber" min="1" max="10" value="1">
             </div>
             <div class="form-group">
-                <label>Khung giờ (Ví dụ: 08:30 - 10:00)</label>
-                <input type="text" id="formTimeSlot" placeholder="Nhập giờ giấc nha...">
+                <label>Khung giờ</label>
+                <input type="text" id="formTimeSlot" placeholder="Ví dụ: 08:30 - 10:00">
             </div>
             <div class="form-group">
                 <label>Tên địa danh (Tiếng Việt)</label>
-                <input type="text" id="formLocation" placeholder="Ví dụ: Bến Thượng Hải">
+                <input type="text" id="formLocation">
             </div>
             <div class="form-group">
-                <label>Tên địa danh (Tiếng Trung - nếu có)</label>
-                <input type="text" id="formLocationZh" placeholder="Ví dụ: 外滩">
+                <label>Tên địa danh (Tiếng Trung)</label>
+                <input type="text" id="formLocationZh">
             </div>
             <div class="form-group">
-                <label>Nội dung hoạt động chi tiết</label>
-                <textarea id="formContent" rows="3" placeholder="Bà định làm gì ở đây dọ..."></textarea>
+                <label>Nội dung chi tiết</label>
+                <textarea id="formContent" rows="3"></textarea>
             </div>
             <div class="form-group">
-                <label>Phương tiện di chuyển</label>
-                <input type="text" id="formTransport" placeholder="Ví dụ: Metro Line 2, Đi bộ...">
+                <label>Phương tiện</label>
+                <input type="text" id="formTransport">
             </div>
             <div class="form-group">
                 <label>Chi phí dự kiến (Tệ)</label>
@@ -470,32 +368,32 @@
             <div class="form-group">
                 <label>Trạng thái</label>
                 <select id="formStatus">
-                    <option value="Chưa đi">Chưa đi ✈️</option>
-                    <option value="Đang đi">Đang đi 🚗</option>
-                    <option value="Đã xong">Đã xong ✅</option>
+                    <option value="Chưa đi">Chưa đi</option>
+                    <option value="Đang đi">Đang đi</option>
+                    <option value="Đã xong">Đã xong</option>
                 </select>
             </div>
             <div class="modal-buttons">
-                <button class="btn-modal cancel" onclick="closeModal('timelineModal')">Hủy nè</button>
-                <button class="btn-modal save" onclick="saveTimelineData()">Lưu luôn</button>
+                <button class="btn-modal" onclick="closeModal('timelineModal')">Hủy</button>
+                <button class="btn-modal save" onclick="saveTimelineData()">Lưu</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="checklistModal">
         <div class="modal-content">
-            <div class="modal-header">Chuẩn Bị Hành Lý Đê 🎉</div>
+            <h3 style="margin-bottom:15px; text-align:center;">Thêm Đồ Hành Lý</h3>
             <div class="form-group">
-                <label>Danh mục (Ví dụ: Giấy tờ, Quần áo, Đồ makeup...)</label>
-                <input type="text" id="formChecklistCategory" placeholder="Nhập nhóm đồ vật...">
+                <label>Danh mục (Giấy tờ, Quần áo...)</label>
+                <input type="text" id="formChecklistCategory">
             </div>
             <div class="form-group">
                 <label>Tên món đồ</label>
-                <input type="text" id="formChecklistItemName" placeholder="Ví dụ: Hộ chiếu, Sạc dự phòng...">
+                <input type="text" id="formChecklistItemName">
             </div>
             <div class="modal-buttons">
-                <button class="btn-modal cancel" onclick="closeModal('checklistModal')">Thôi dẹp</button>
-                <button class="btn-modal save" onclick="saveChecklistData()">Thêm lẹ</button>
+                <button class="btn-modal" onclick="closeModal('checklistModal')">Hủy</button>
+                <button class="btn-modal save" onclick="saveChecklistData()">Thêm</button>
             </div>
         </div>
     </div>
@@ -508,10 +406,8 @@
         async function fetchAllData() {
             const res = await fetch('/api/data');
             const data = await res.json();
-            
             globalTimelineData = data.timeline || [];
             globalChecklistData = data.checklist || [];
-
             renderTabs();
             renderTimeline();
             renderChecklist();
@@ -542,7 +438,7 @@
             const filtered = globalTimelineData.filter(item => item.day_number === currentDay);
 
             if(filtered.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-sub); font-size:0.9rem;">Hôm nay trống lịch rồi bà ơi, bấm nút ＋ góc dưới để thêm điểm đi nha!</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-sub);">Hôm nay trống lịch rồi bà ơi!</div>`;
                 return;
             }
 
@@ -552,27 +448,22 @@
                 if(item.status === 'Đang đi') statusClass = 'active';
                 if(item.status === 'Đã xong') statusClass = 'done';
 
-                let motionIcon = '✈️';
-                if(item.status === 'Đang đi') motionIcon = '🚗';
-                if(item.status === 'Đã xong') motionIcon = '🎉';
-
                 html += `
                     <div class="timeline-card">
                         <div class="card-top">
-                            <span class="time-badge">🕒 ` + (item.time_slot || 'Chưa định giờ') + `</span>
+                            <span class="time-badge">🕒 ${item.time_slot || 'Chưa định giờ'}</span>
                             <span class="status-badge ${statusClass}" onclick="quickToggleStatus(${item.id}, '${item.status}')">
-                                ${item.status || 'Chưa đi'} ${motionIcon}
+                                ${item.status || 'Chưa đi'}
                             </span>
                         </div>
                         <div class="location-title" onclick="editTimeline(${item.id})" style="cursor:pointer; color:var(--primary-dark)">
                             ${item.location}
                         </div>
-                        ` + (item.location_zh ? `<div class="location-zh">🇨🇳 ${item.location_zh}</div>` : '') + `
-                        ` + (item.content ? `<div class="card-content">${item.content.replace(/\n/g, '<br>')}</div>` : '') + `
-                        
+                        ${item.location_zh ? `<div class="location-zh">🇨🇳 ${item.location_zh}</div>` : ''}
+                        ${item.content ? `<div class="card-content">${item.content}</div>` : ''}
                         <div class="card-meta">
-                            <div class="meta-item">🚇 ${item.transport || 'Tự túc'}</div>
-                            <div class="meta-item" style="color:var(--text-main); font-weight:700;">💰 ` + (item.cost_real > 0 ? item.cost_real : item.cost_est) + ` Tệ</div>
+                            <div>🚇 ${item.transport || 'Tự túc'}</div>
+                            <div style="font-weight:700;">💰 ${item.cost_real > 0 ? item.cost_real : item.cost_est} Tệ</div>
                             <button class="btn-mini-delete" onclick="deleteTimeline(${item.id})">🗑️</button>
                         </div>
                     </div>
@@ -584,7 +475,7 @@
         function renderChecklist() {
             const container = document.getElementById('checklistContainer');
             if(globalChecklistData.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-sub); font-size:0.9rem;">Chưa soạn món nào hết trơn! Bấm "Thêm đồ" đi bà.</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-sub);">Chưa có đồ dùng nào.</div>`;
                 return;
             }
 
@@ -603,8 +494,7 @@
                     html += `
                         <div class="checklist-item">
                             <div class="chk-left ${isChecked ? 'checked' : ''}" onclick="toggleChecklist(${item.id}, ${!isChecked})">
-                                <input type="checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); toggleChecklist(${item.id}, this.checked)">
-                                <span>${item.item_name}</span>
+                                <span>${isChecked ? '✅' : '⬜'} ${item.item_name}</span>
                             </div>
                             <button class="btn-mini-delete" onclick="deleteChecklistItem(${item.id})">🗑️</button>
                         </div>
@@ -615,16 +505,10 @@
             container.innerHTML = html;
         }
 
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         function openTimelineModal() {
-            document.getElementById('timelineModalTitle').innerText = "Thêm Điểm Đi Mới ✨";
             document.getElementById('formTimelineId').value = '';
             document.getElementById('formDayNumber').value = currentDay;
             document.getElementById('formTimeSlot').value = '';
@@ -641,8 +525,6 @@
         function editTimeline(id) {
             const item = globalTimelineData.find(x => x.id === id);
             if(!item) return;
-
-            document.getElementById('timelineModalTitle').innerText = "Sửa Lịch Trình ✏️";
             document.getElementById('formTimelineId').value = item.id;
             document.getElementById('formDayNumber').value = item.day_number;
             document.getElementById('formTimeSlot').value = item.time_slot || '';
@@ -670,24 +552,11 @@
                 status: document.getElementById('formStatus').value
             };
 
-            if(!payload.location) {
-                alert("Địa danh không được bỏ trống đâu nha bà ơi!");
-                return;
-            }
-
-            let url = '/api/timeline';
-            let method = 'POST';
-            if(id) {
-                url = `/api/timeline/${id}`;
-                method = 'PUT';
-            }
-
-            await fetch(url, {
-                method: method,
+            await fetch(id ? `/api/timeline/${id}` : '/api/timeline', {
+                method: id ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
             closeModal('timelineModal');
             fetchAllData();
         }
@@ -699,18 +568,18 @@
 
             const item = globalTimelineData.find(x => x.id === id);
             if(!item) return;
+            item.status = nextStatus;
 
-            const payload = { ...item, status: nextStatus };
             await fetch(`/api/timeline/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(item)
             });
             fetchAllData();
         }
 
         async function deleteTimeline(id) {
-            if(confirm("Bà có chắc muốn xóa điểm lịch trình này không dọ?")) {
+            if(confirm("Xóa điểm này nha bà?")) {
                 await fetch(`/api/timeline/${id}`, { method: 'DELETE' });
                 fetchAllData();
             }
@@ -723,20 +592,15 @@
         }
 
         async function saveChecklistData() {
-            const cat = document.getElementById('formChecklistCategory').value.trim() || "Đồ dùng khác";
-            const name = document.getElementById('formChecklistItemName').value.trim();
-
-            if(!name) {
-                alert("Món này tên gì bà chưa nhập kìa!");
-                return;
-            }
+            const cat = document.getElementById('formChecklistCategory').value || "Đồ dùng khác";
+            const name = document.getElementById('formChecklistItemName').value;
+            if(!name) return;
 
             await fetch('/api/checklist', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ category: cat, item_name: name })
             });
-
             closeModal('checklistModal');
             fetchAllData();
         }
@@ -751,7 +615,7 @@
         }
 
         async function deleteChecklistItem(id) {
-            if(confirm("Xóa món đồ này ra khỏi danh sách chuẩn bị nha bà iu?")) {
+            if(confirm("Xóa món này nha bà?")) {
                 await fetch(`/api/checklist/${id}`, { method: 'DELETE' });
                 fetchAllData();
             }
