@@ -32,7 +32,7 @@ export default {
       }
     }
 
-    // 3. Sửa/Cập nhật một điểm lịch trình (bao gồm cả update nhanh trạng thái)
+    // 3. Sửa/Cập nhật một điểm lịch trình
     if (request.method === "PUT" && url.pathname.startsWith("/api/timeline/")) {
       try {
         const id = url.pathname.split("/").pop();
@@ -101,8 +101,8 @@ export default {
       }
     }
 
-    // Nếu không khớp API nào, Cloudflare Pages sẽ tự động lôi file index.html ra để hiển thị nên bà không cần lo lắng nha!
-    return new Response("Not Found", { status: 404 });
+    // CHÌA KHÓA Ở ĐÂY: Nếu không gọi API, hãy để Cloudflare Pages tự động trả về các file tĩnh (index.html)
+    return env.ASSETS.fetch(request);
   }
 };
 
