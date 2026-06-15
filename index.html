@@ -55,7 +55,7 @@
             padding: 0 16px;
         }
 
-        /* TABS ĐỔI MODULE Ở BOTTOM NAV */
+        /* NAVIGATION BAR */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -83,29 +83,19 @@
             transition: color 0.2s ease;
         }
 
-        .nav-item.active {
-            color: var(--primary-dark);
-        }
+        .nav-item.active { color: var(--primary-dark); }
+        .nav-item span { font-size: 1.3rem; }
 
-        .nav-item span {
-            font-size: 1.3rem;
-        }
+        .app-module { display: none; }
+        .app-module.active { display: block; }
 
-        /* Giao diện ẩn/hiển các Module */
-        .app-module {
-            display: none;
-        }
-        .app-module.active {
-            display: block;
-        }
-
-        /* TAB ĐẦU NGÀY HÀNH TRÌNH */
+        /* TABS CHỌN NGÀY */
         .day-tabs {
             display: flex;
             background: var(--card-bg);
             padding: 6px;
             border-radius: 20px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.02);
             overflow-x: auto;
         }
@@ -117,33 +107,47 @@
             border-radius: 15px; white-space: nowrap;
         }
 
-        .day-btn.active {
-            background: var(--primary);
-            color: #ffffff;
-        }
+        .day-btn.active { background: var(--primary); color: #ffffff; }
 
-        /* CARD LỊCH TRÌNH XINH XỈU */
-        .timeline-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 16px;
+        /* DASHBOARD CHI PHÍ THEO NGÀY */
+        .day-dashboard {
+            background: #fff;
+            border-radius: 18px;
+            padding: 12px 16px;
             margin-bottom: 15px;
-            box-shadow: 0 6px 12px rgba(157, 141, 241, 0.04);
+            box-shadow: 0 4px 10px rgba(157, 141, 241, 0.05);
+            border: 1px solid rgba(157, 141, 241, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .day-dashboard .dash-title {
+            font-size: 0.8rem; font-weight: 700; color: var(--text-main);
+        }
+        .day-dashboard .dash-grid {
+            display: flex; gap: 15px;
+        }
+        .day-dashboard .dash-box {
+            text-align: right;
+        }
+        .day-dashboard .dash-box div { font-size: 0.7rem; color: var(--text-sub); font-weight: 700; }
+        .day-dashboard .dash-box span { font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); }
+
+        /* CARD LỊCH TRÌNH */
+        .timeline-card {
+            background: var(--card-bg); border-radius: 24px; padding: 16px;
+            margin-bottom: 15px; box-shadow: 0 6px 12px rgba(157, 141, 241, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.7);
         }
 
-        .card-top {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-        }
+        .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 
         .time-badge {
             background: #fdf0ff; color: var(--primary-dark);
             padding: 4px 10px; border-radius: 10px; font-size: 0.8rem; font-weight: 700;
         }
 
-        .status-badge {
-            padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer;
-        }
+        .status-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
         .status-badge.pending { background: var(--status-pending); color: var(--text-pending); }
         .status-badge.active { background: var(--status-active); color: var(--text-active); }
         .status-badge.done { background: var(--status-done); color: var(--text-done); }
@@ -161,47 +165,29 @@
         }
         .card-block strong { color: var(--primary-dark); display: block; margin-bottom: 2px; font-size: 0.8rem; text-transform: uppercase;}
 
-        /* PHẦN HIỂN THỊ CHI PHÍ CON TRONG CARD */
-        .card-costs-summary {
-            border-top: 1px dashed #ebeeef; padding-top: 8px; margin-top: 8px; font-size: 0.8rem;
-        }
-        .cost-mini-row {
-            display: flex; justify-content: space-between; padding: 2px 0; color: var(--text-main);
-        }
+        .card-costs-summary { border-top: 1px dashed #ebeeef; padding-top: 8px; margin-top: 8px; font-size: 0.8rem; }
+        .cost-mini-row { display: flex; justify-content: space-between; padding: 2px 0; color: var(--text-main); }
+        .card-footer-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-sub); margin-top: 10px; }
 
-        .card-footer-meta {
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-sub); margin-top: 10px;
-        }
-
-        /* BẢNG TỔNG TIỀN KIỂU HÌNH 1 MẪU */
+        /* BẢNG TỔNG TIỀN VÍ TIỀN */
         .summary-card {
             background: linear-gradient(135deg, #ffffff, #fdfbff);
             border-radius: 24px; padding: 20px; margin-bottom: 20px;
             box-shadow: 0 8px 16px rgba(157, 141, 241, 0.06);
             border: 1px solid rgba(157, 141, 241, 0.1);
         }
-        .summary-header-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: center;
-        }
-        .sum-box {
-            background: #f8f6fc; padding: 12px; border-radius: 16px; border: 1px solid #f0ecf9;
-        }
-        .sum-box.highlight {
-            background: #f0ecf9; border-color: var(--secondary);
-        }
+        .summary-header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: center; }
+        .sum-box { background: #f8f6fc; padding: 12px; border-radius: 16px; border: 1px solid #f0ecf9; }
+        .sum-box.highlight { background: #f0ecf9; border-color: var(--secondary); }
         .sum-box div { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 4px; font-weight: 700; }
         .sum-box span { font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); }
 
-        .table-finance {
-            width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;
-        }
-        .table-finance th, .table-finance td {
-            padding: 10px 8px; border-bottom: 1px solid #f0eff5;
-        }
+        .table-finance { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+        .table-finance th, .table-finance td { padding: 10px 8px; border-bottom: 1px solid #f0eff5; }
         .table-finance th { color: var(--text-sub); font-weight: 700; }
         .table-finance tr:last-child td { border-bottom: none; font-weight: 700; color: var(--primary-dark); }
 
-        /* POPUP & LIST COST INPUT SỬA ĐỔI */
+        /* POPUP & LIST COST INPUT */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(61, 52, 96, 0.3); backdrop-filter: blur(6px);
@@ -220,7 +206,6 @@
         }
         .form-group input:focus { border-color: var(--primary); }
 
-        /* Thiết kế cụm thêm nhiều chi phí con */
         .cost-input-item {
             background: #fbfafc; border: 1px solid #ece9f2; padding: 8px; border-radius: 12px; margin-bottom: 6px;
             display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr auto; gap: 4px; align-items: center;
@@ -243,7 +228,7 @@
             box-shadow: 0 4px 15px rgba(157, 141, 241, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 98;
         }
 
-        /* CHECKLIST HÀNH LÝ MỚI */
+        /* CHECKLIST HÀNH LÝ */
         .checklist-box { background: white; padding: 14px; border-radius: 20px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         .checklist-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f8f8fa; }
         .checklist-row:last-child { border-bottom: none; }
@@ -272,6 +257,21 @@
         
         <div id="module-timeline" class="app-module active">
             <div class="day-tabs" id="dayTabsZone"></div>
+            
+            <div class="day-dashboard">
+                <div class="dash-title">💰 Chi phí Ngày <span id="lbl-dash-day">1</span></div>
+                <div class="dash-grid">
+                    <div class="dash-box">
+                        <div>DỰ KIẾN</div>
+                        <span id="lbl-dash-est">0đ</span>
+                    </div>
+                    <div class="dash-box">
+                        <div>THỰC TẾ</div>
+                        <span id="lbl-dash-real" style="color: #52a135;">0đ</span>
+                    </div>
+                </div>
+            </div>
+
             <div id="timelineListZone"></div>
             <button class="fab-btn" onclick="openTimelineModal()">＋</button>
         </div>
@@ -298,8 +298,7 @@
                             <th>Thực tế (VND)</th>
                         </tr>
                     </thead>
-                    <tbody id="financeTableBody">
-                        </tbody>
+                    <tbody id="financeTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -332,7 +331,7 @@
                 <input type="text" id="formLocation" placeholder="Ví dụ: Tháp Truyền Hình Minh Châu Phương Đông">
             </div>
             <div class="form-group">
-                <label>Tên điểm đi (Tiếng Trung - Dùng để click mở Amap tìm kiếm)</label>
+                <label>Tên điểm đi (Tiếng Trung - Click mở Amap)</label>
                 <input type="text" id="formLocationZh" placeholder="Ví dụ: 东方明珠">
             </div>
             <div class="form-group">
@@ -340,12 +339,12 @@
                 <textarea id="formContent" rows="2" placeholder="Ăn gì chơi gì ở đây nà..."></textarea>
             </div>
             <div class="form-group">
-                <label>Hướng dẫn di chuyển / Đường đi (Option 1, Option 2...)</label>
-                <textarea id="formTransportGuide" rows="2" placeholder="Option 1: Metro Line 2...\nOption 2:..."></textarea>
+                <label>Hướng dẫn di chuyển / Đường đi</label>
+                <textarea id="formTransportGuide" rows="2" placeholder="Option 1: Metro Line 2..."></textarea>
             </div>
             <div class="form-group">
                 <label>Ghi chú riêng</label>
-                <textarea id="formNotes" rows="1" placeholder="Nhắc nhở riêng món gì mua sắm..."></textarea>
+                <textarea id="formNotes" rows="1" placeholder="Nhắc nhở riêng..."></textarea>
             </div>
             <div class="form-group">
                 <label>Trạng thái</label>
@@ -372,14 +371,30 @@
     <div class="modal-overlay" id="checklistModal">
         <div class="modal-content">
             <h3 style="margin-bottom:12px; text-align:center;">Thêm Đồ Vào Vali 🎒</h3>
+            
             <div class="form-group">
-                <label>Danh mục phân loại (Quần áo, Mỹ phẩm, Giấy tờ...)</label>
-                <input type="text" id="formChecklistCategory" placeholder="Nhập nhóm đồ vật...">
+                <label>Danh mục phân loại</label>
+                <select id="formChecklistCategory" onchange="checkCustomCategory(this.value)">
+                    <option value="Giấy tờ">📄 Giấy tờ quan trọng</option>
+                    <option value="Quần áo">👗 Quần áo & Giày dép</option>
+                    <option value="Mỹ phẩm">💄 Mỹ phẩm & Skincare</option>
+                    <option value="Thiết bị công nghệ">🔌 Thiết bị công nghệ</option>
+                    <option value="Thuốc men">💊 Thuốc men & Y tế</option>
+                    <option value="Khác">🧸 Đồ dùng khác</option>
+                    <option value="__CUSTOM__">➕ [Thêm danh mục mới...]</option>
+                </select>
             </div>
+
+            <div class="form-group" id="customCategoryWrapper" style="display: none;">
+                <label>Tên danh mục mới bà muốn thêm:</label>
+                <input type="text" id="formChecklistCustomCategory" placeholder="Ví dụ: Đồ ăn vặt mang theo">
+            </div>
+
             <div class="form-group">
                 <label>Tên món đồ cần mang</label>
                 <input type="text" id="formChecklistItemName" placeholder="Ví dụ: Củ sạc đa năng">
             </div>
+            
             <div class="modal-buttons">
                 <button class="btn-action cancel" onclick="closeModal('checklistModal')">Hủy</button>
                 <button class="btn-action save" onclick="saveChecklistData()">Thêm Luôn</button>
@@ -391,7 +406,7 @@
         let currentDay = 1;
         let globalTimelineData = [];
         let globalChecklistData = [];
-        const RATE = 3900; // Tỷ giá quy đổi cố định của bà iu
+        const RATE = 3900;
 
         function switchModule(moduleName) {
             document.querySelectorAll('.app-module').forEach(el => el.classList.remove('active'));
@@ -431,8 +446,24 @@
         }
 
         function renderTimeline() {
+            document.getElementById('lbl-dash-day').innerText = currentDay;
             const container = document.getElementById('timelineListZone');
             const filtered = globalTimelineData.filter(item => item.day_number === currentDay);
+
+            // TÍNH TOÁN CHI PHÍ RIÊNG CHO DASHBOARD CỦA NGÀY HIỆN TẠI
+            let dayEst = 0;
+            let dayReal = 0;
+            filtered.forEach(item => {
+                if(item.costs && item.costs.length > 0) {
+                    item.costs.forEach(c => {
+                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
+                        if(c.cost_type === 'Dự kiến') dayEst += valVnd;
+                        else dayReal += valVnd;
+                    });
+                }
+            });
+            document.getElementById('lbl-dash-est').innerText = dayEst.toLocaleString() + ' đ';
+            document.getElementById('lbl-dash-real').innerText = dayReal.toLocaleString() + ' đ';
 
             if(filtered.length === 0) {
                 container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-sub); font-size:0.85rem;">Hôm nay chưa xếp lịch đi đâu hết bà ơi, bấm nút ＋ để lên đồ đi quẩy thui!</div>`;
@@ -445,11 +476,9 @@
                 if(item.status === 'Đang đi') statusClass = 'active';
                 if(item.status === 'Đã xong') statusClass = 'done';
 
-                // Chuẩn bị chuỗi tìm kiếm bản đồ Amap (Cao Đức Map mã hóa URI linh hoạt)
                 const searchKeyword = item.location_zh ? item.location_zh : item.location;
                 const amapUrl = `https://www.amap.com/search?query=${encodeURIComponent(searchKeyword)}`;
 
-                // Tạo danh sách text chi phí hiển thị thu gọn trong Card
                 let costRowsHtml = '';
                 if(item.costs && item.costs.length > 0) {
                     item.costs.forEach(c => {
@@ -527,7 +556,6 @@
                 `;
             });
 
-            // Dòng tổng kết cuối cùng của bảng tài chính giống hình mẫu bà gửi
             html += `
                 <tr style="background:#f9f8fe;">
                     <td><strong>Tổng cộng</strong></td>
@@ -546,7 +574,7 @@
             }
             const groups = {};
             globalChecklistData.forEach(item => {
-                const cat = item.category || "Chân mây cuối trời";
+                const cat = item.category || "Đồ dùng khác";
                 if(!groups[cat]) groups[cat] = [];
                 groups[cat].push(item);
             });
@@ -570,13 +598,12 @@
             container.innerHTML = html;
         }
 
-        // CỤM HÀM THÊM ĐỘNG DÒNG NHẬP CHI PHÍ TRÊN POPUP
         function addCostInputRow(data = { cost_name:'', category:'Di chuyển', amount:0, currency:'CNY', cost_type:'Dự kiến' }) {
             const container = document.getElementById('costFormRowsContainer');
             const row = document.createElement('div');
             row.className = 'cost-input-item';
             row.innerHTML = `
-                <input type="text" placeholder="Tên phí (ví dụ: Vé tàu)" class="c-name" value="${data.cost_name}">
+                <input type="text" placeholder="Tên phí" class="c-name" value="${data.cost_name}">
                 <select class="c-cat">
                     <option value="Di chuyển" ${data.category==='Di chuyển'?'selected':''}>Di chuyển</option>
                     <option value="Ăn uống" ${data.category==='Ăn uống'?'selected':''}>Ăn uống</option>
@@ -701,22 +728,42 @@
         }
 
         async function deleteTimeline(id) {
-            if(confirm("Xóa điểm đi này là bay luôn đống chi phí đi kèm đó nhe bà ơi, chắc chưa nà?")) {
+            if(confirm("Xóa điểm đi này là mất hết chi phí đi kèm đó nhe bà ơi, chắc chưa nà?")) {
                 await fetch(`/api/timeline/${id}`, { method: 'DELETE' });
                 fetchAllData();
             }
         }
 
+        /* LOGIC POPUP HÀNH LÝ DROPDOWN */
         function openChecklistModal() {
-            document.getElementById('formChecklistCategory').value = '';
+            document.getElementById('formChecklistCategory').value = 'Giấy tờ';
+            document.getElementById('formChecklistCustomCategory').value = '';
             document.getElementById('formChecklistItemName').value = '';
+            document.getElementById('customCategoryWrapper').style.display = 'none';
             openModal('checklistModal');
         }
 
+        function checkCustomCategory(val) {
+            const wrapper = document.getElementById('customCategoryWrapper');
+            if(val === '__CUSTOM__') {
+                wrapper.style.display = 'block';
+            } else {
+                wrapper.style.display = 'none';
+            }
+        }
+
         async function saveChecklistData() {
-            const cat = document.getElementById('formChecklistCategory').value.trim() || "Đồ dùng khác";
+            const selectEl = document.getElementById('formChecklistCategory');
+            let cat = selectEl.value;
+            
+            // Nếu chọn mục tự thêm danh mục mới
+            if(cat === '__CUSTOM__') {
+                cat = document.getElementById('formChecklistCustomCategory').value.trim();
+                if(!cat) { alert("Bà ơi hãy nhập tên danh mục mới nha!"); return; }
+            }
+
             const name = document.getElementById('formChecklistItemName').value.trim();
-            if(!name) return;
+            if(!name) { alert("Bà chưa nhập tên món đồ kìa!"); return; }
 
             await fetch('/api/checklist', {
                 method: 'POST',
