@@ -144,8 +144,7 @@
         .card-block strong { color: var(--primary-dark); display: block; margin-bottom: 2px; font-size: 0.8rem; text-transform: uppercase; }
 
         .card-costs-summary { border-top: 1px dashed #ebeeef; padding-top: 8px; margin-top: 8px; font-size: 0.8rem; }
-        .cost-mini-row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 3px 0; color: var(--text-main); border-bottom: 1px dashed #f6f4fa; }
-        .cost-mini-row:last-child { border-bottom: none; }
+        .cost-mini-row { display: flex; justify-content: space-between; padding: 3px 0; color: var(--text-main); }
         
         .card-footer-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-sub); margin-top: 10px; }
         .btn-mini-delete { background: none; border: none; color: #ff5c5c; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
@@ -175,19 +174,18 @@
             opacity: 0; visibility: hidden; transition: all 0.25s ease; padding: 12px;
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--card-bg); border-radius: 28px; padding: 20px; width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background: var(--card-bg); border-radius: 28px; padding: 20px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; }
         .form-group { margin-bottom: 10px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 3px; color: var(--text-sub); }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px 12px; border: 2px solid #edf0f2; border-radius: 12px; outline: none; font-size: 0.9rem; }
         .form-group input:focus { border-color: var(--primary); }
 
-        /* HÀNG NHẬP CHI PHÍ SONG SONG */
         .cost-input-item {
-            background: #fbfafc; border: 1px solid #ece9f2; padding: 10px; border-radius: 14px; margin-bottom: 8px;
-            display: grid; grid-template-columns: 1.5fr 1.2fr 1fr 1fr 0.8fr auto; gap: 6px; align-items: center;
+            background: #fbfafc; border: 1px solid #ece9f2; padding: 8px; border-radius: 12px; margin-bottom: 6px;
+            display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr auto; gap: 4px; align-items: center;
         }
         .cost-input-item input, .cost-input-item select { padding: 6px; font-size: 0.8rem; border-radius: 8px; border: 1px solid #dcd9e2; width: 100%; }
-        .btn-add-cost-row { background: none; border: 1px dashed var(--primary); color: var(--primary-dark); width: 100%; padding: 8px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-top: 4px; }
+        .btn-add-cost-row { background: none; border: 1px dashed var(--primary); color: var(--primary-dark); width: 100%; padding: 6px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-top: 4px; }
 
         .modal-buttons { display: flex; gap: 8px; margin-top: 15px; }
         .btn-action { flex: 1; padding: 11px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
@@ -326,19 +324,11 @@
                 </select>
             </div>
 
-            <!-- DANH SÁCH CHI PHÍ ĐƯỢC TỐI ƯU SONG SONG -->
+            <!-- DANH SÁCH CHI PHÍ CON THEO ĐÚNG CẤU TRÚC GỐC -->
             <div style="margin-top:12px; border-top:1px solid #f0eff5; padding-top:10px;">
-                <label style="font-size:0.8rem; font-weight:700; color:var(--primary-dark);">💰 Danh Sách Các Khoản Chi Phí</label>
-                <div style="display:grid; grid-template-columns: 1.5fr 1.2fr 1fr 1fr 0.8fr auto; gap:6px; padding:0 10px; margin-bottom:4px; font-size:0.7rem; font-weight:700; color:var(--text-sub);">
-                    <div>Tên khoản chi</div>
-                    <div>Phân loại</div>
-                    <div>Dự kiến</div>
-                    <div>Thực tế</div>
-                    <div>Đơn vị</div>
-                    <div></div>
-                </div>
-                <div id="costFormRowsContainer"></div>
-                <button type="button" class="btn-add-cost-row" onclick="addCostInputRow()">＋ Thêm một khoản chi phí mới</button>
+                <label style="font-size:0.8rem; font-weight:700; color:var(--primary-dark);">💰 Danh Sách Các Khoản Chi Phí Phân Loại</label>
+                <div id="costFormRowsContainer" style="margin-top:6px;"></div>
+                <button type="button" class="btn-add-cost-row" onclick="addCostInputRow()">＋ Thêm một khoản chi phí</button>
             </div>
 
             <div class="modal-buttons">
@@ -454,9 +444,9 @@
             filtered.forEach(item => {
                 if(item.costs && item.costs.length > 0) {
                     item.costs.forEach(c => {
-                        let factor = c.currency === 'CNY' ? RATE : 1;
-                        dayEst += (c.amount_est || 0) * factor;
-                        dayReal += (c.amount_real || 0) * factor;
+                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
+                        if(c.cost_type === 'Dự kiến') dayEst += valVnd;
+                        else dayReal += valVnd;
                     });
                 }
             });
@@ -479,17 +469,9 @@
 
                 let costRowsHtml = '';
                 if(item.costs && item.costs.length > 0) {
-                    costRowsHtml += `<div class="cost-mini-row" style="font-weight:700; color:var(--text-sub); border-bottom:1px solid #ebeeef;"><div>Khoản chi (Phân loại)</div><div>Dự kiến</div><div>Thực tế</div></div>`;
                     item.costs.forEach(c => {
-                        let f = c.currency === 'CNY' ? RATE : 1;
-                        let showEst = c.currency === 'CNY' ? `${c.amount_est}¥` : `${c.amount_est.toLocaleString()}đ`;
-                        let showReal = c.amount_real > 0 ? (c.currency === 'CNY' ? `${c.amount_real}¥` : `${c.amount_real.toLocaleString()}đ`) : '-';
-                        costRowsHtml += `
-                            <div class="cost-mini-row">
-                                <span>• ${c.cost_name} <small style="color:var(--text-sub)">(${c.category})</small></span>
-                                <span style="color:var(--text-sub)">${showEst}</span>
-                                <span style="color:var(--text-done); font-weight:700;">${showReal}</span>
-                            </div>`;
+                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
+                        costRowsHtml += `<div class="cost-mini-row"><span>• ${c.cost_name} (${c.category}) [${c.cost_type}]:</span> <strong>${c.currency === 'CNY' ? c.amount+'¥' : ''} ~ ${valVnd.toLocaleString()} đ</strong></div>`;
                     });
                 }
 
@@ -506,7 +488,7 @@
                         ${item.notes ? `<div class="card-block" style="background:#fffdf2; border-left:3px solid #ffcb00;"><strong>📌 Ghi chú</strong>${item.notes.replace(/\n/g, '<br>')}</div>` : ''}
                         ${costRowsHtml ? `<div class="card-costs-summary">${costRowsHtml}</div>` : ''}
                         <div class="card-footer-meta">
-                            <span style="color:var(--primary-dark); font-weight:700; cursor:pointer;" onclick="editTimeline(${item.id})">✏️ Chỉnh sửa / Cập nhật phí</span>
+                            <span style="color:var(--primary-dark); font-weight:700; cursor:pointer;" onclick="editTimeline(${item.id})">✏️ Chỉnh sửa</span>
                             <button class="btn-mini-delete" onclick="deleteTimeline(${item.id})">🗑️ Xóa</button>
                         </div>
                     </div>
@@ -524,13 +506,16 @@
             globalTimelineData.forEach(item => {
                 if(item.costs && item.costs.length > 0) {
                     item.costs.forEach(c => {
-                        let factor = c.currency === 'CNY' ? RATE : 1;
+                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
                         let categoryKey = cats.includes(c.category) ? c.category : "Khác";
                         
-                        sumData[categoryKey].est += (c.amount_est || 0) * factor;
-                        sumData[categoryKey].real += (c.amount_real || 0) * factor;
-                        totalEstAll += (c.amount_est || 0) * factor;
-                        totalRealAll += (c.amount_real || 0) * factor;
+                        if(c.cost_type === 'Dự kiến') {
+                            sumData[categoryKey].est += valVnd;
+                            totalEstAll += valVnd;
+                        } else {
+                            sumData[categoryKey].real += valVnd;
+                            totalRealAll += valVnd;
+                        }
                     });
                 }
             });
@@ -587,13 +572,12 @@
             container.innerHTML = html;
         }
 
-        // HÀNG NHẬP LIỆU SONG SONG DỰ KIẾN VÀ THỰC TẾ
-        function addCostInputRow(data = { cost_name:'', category:'Di chuyển', amount_est:0, amount_real:0, currency:'CNY' }) {
+        function addCostInputRow(data = { cost_name:'', category:'Di chuyển', amount:0, currency:'CNY', cost_type:'Dự kiến' }) {
             const container = document.getElementById('costFormRowsContainer');
             const row = document.createElement('div');
             row.className = 'cost-input-item';
             row.innerHTML = `
-                <input type="text" placeholder="Tên khoản chi" class="c-name" value="${data.cost_name}">
+                <input type="text" placeholder="Tên phí" class="c-name" value="${data.cost_name}">
                 <select class="c-cat">
                     <option value="Di chuyển" ${data.category==='Di chuyển'?'selected':''}>Di chuyển</option>
                     <option value="Ăn uống" ${data.category==='Ăn uống'?'selected':''}>Ăn uống</option>
@@ -601,11 +585,14 @@
                     <option value="Mua sắm" ${data.category==='Mua sắm'?'selected':''}>Mua sắm</option>
                     <option value="Khác" ${data.category==='Khác'?'selected':''}>Khác</option>
                 </select>
-                <input type="number" placeholder="Dự kiến" class="c-est" value="${data.amount_est || 0}">
-                <input type="number" placeholder="Thực tế" class="c-real" value="${data.amount_real || 0}">
+                <input type="number" placeholder="Số tiền" class="c-amount" value="${data.amount}">
                 <select class="c-curr">
                     <option value="CNY" ${data.currency==='CNY'?'selected':''}>CNY (¥)</option>
                     <option value="VND" ${data.currency==='VND'?'selected':''}>VND (đ)</option>
+                </select>
+                <select class="c-type">
+                    <option value="Dự kiến" ${data.cost_type==='Dự kiến'?'selected':''}>Dự kiến</option>
+                    <option value="Thực tế" ${data.cost_type==='Thực tế'?'selected':''}>Thực tế</option>
                 </select>
                 <button type="button" style="background:none; border:none; color:red; font-weight:700;" onclick="this.parentElement.remove()">X</button>
             `;
@@ -617,15 +604,14 @@
             const arr = [];
             rows.forEach(row => {
                 const name = row.querySelector('.c-name').value.trim();
-                const est = parseFloat(row.querySelector('.c-est').value) || 0;
-                const real = parseFloat(row.querySelector('.c-real').value) || 0;
+                const amount = parseFloat(row.querySelector('.c-amount').value) || 0;
                 if(name) {
                     arr.push({
                         cost_name: name,
                         category: row.querySelector('.c-cat').value,
-                        amount_est: est,
-                        amount_real: real,
-                        currency: row.querySelector('.c-curr').value
+                        amount: amount,
+                        currency: row.querySelector('.c-curr').value,
+                        cost_type: row.querySelector('.c-type').value
                     });
                 }
             });
@@ -654,7 +640,7 @@
             const item = globalTimelineData.find(x => x.id === id);
             if(!item) return;
 
-            document.getElementById('modalTitle').innerText = "Chỉnh Sửa Hành Trình & Cập Nhật Phí ✏️";
+            document.getElementById('modalTitle').innerText = "Chỉnh Sửa Hành Trình ✏️";
             document.getElementById('formTimelineId').value = item.id;
             document.getElementById('formDayNumber').value = item.day_number;
             document.getElementById('formTimeSlot').value = item.time_slot || '';
