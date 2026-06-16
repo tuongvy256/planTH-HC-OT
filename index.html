@@ -36,7 +36,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding-bottom: 90px; /* Chừa không gian cho Bottom Navigation */
+            padding-bottom: 90px;
         }
 
         .header {
@@ -98,38 +98,28 @@
             margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.02);
             overflow-x: auto;
+            gap: 4px;
         }
 
         .day-btn {
-            flex: 1; text-align: center; padding: 10px 12px;
+            flex: 1; text-align: center; padding: 8px 10px;
             background: none; border: none; color: var(--text-sub);
-            font-size: 0.85rem; font-weight: 700; cursor: pointer;
-            border-radius: 15px; white-space: nowrap;
+            cursor: pointer; border-radius: 14px; white-space: nowrap;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
         }
-
+        .day-btn .num { font-size: 0.85rem; font-weight: 700; }
+        .day-btn .date { font-size: 0.7rem; font-weight: 600; opacity: 0.8; }
         .day-btn.active { background: var(--primary); color: #ffffff; }
 
         /* DASHBOARD CHI PHÍ THEO NGÀY */
         .day-dashboard {
-            background: #fff;
-            border-radius: 18px;
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(157, 141, 241, 0.05);
-            border: 1px solid rgba(157, 141, 241, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #fff; border-radius: 18px; padding: 12px 16px; margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(157, 141, 241, 0.05); border: 1px solid rgba(157, 141, 241, 0.1);
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .day-dashboard .dash-title {
-            font-size: 0.8rem; font-weight: 700; color: var(--text-main);
-        }
-        .day-dashboard .dash-grid {
-            display: flex; gap: 15px;
-        }
-        .day-dashboard .dash-box {
-            text-align: right;
-        }
+        .day-dashboard .dash-title { font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
+        .day-dashboard .dash-grid { display: flex; gap: 15px; }
+        .day-dashboard .dash-box { text-align: right; }
         .day-dashboard .dash-box div { font-size: 0.7rem; color: var(--text-sub); font-weight: 700; }
         .day-dashboard .dash-box span { font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); }
 
@@ -141,40 +131,30 @@
         }
 
         .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-
-        .time-badge {
-            background: #fdf0ff; color: var(--primary-dark);
-            padding: 4px 10px; border-radius: 10px; font-size: 0.8rem; font-weight: 700;
-        }
-
+        .time-badge { background: #fdf0ff; color: var(--primary-dark); padding: 4px 10px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; }
         .status-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
         .status-badge.pending { background: var(--status-pending); color: var(--text-pending); }
         .status-badge.active { background: var(--status-active); color: var(--text-active); }
         .status-badge.done { background: var(--status-done); color: var(--text-done); }
 
-        .location-link {
-            font-size: 1.15rem; font-weight: 700; color: var(--primary-dark);
-            text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 2px;
-        }
-
+        .location-link { font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 2px; }
         .location-zh { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 8px; font-style: italic; }
         
-        .card-block {
-            font-size: 0.9rem; background: #fcfbfe; padding: 10px 12px;
-            border-radius: 14px; margin-bottom: 8px; line-height: 1.45;
-        }
-        .card-block strong { color: var(--primary-dark); display: block; margin-bottom: 2px; font-size: 0.8rem; text-transform: uppercase;}
+        .card-block { font-size: 0.9rem; background: #fcfbfe; padding: 10px 12px; border-radius: 14px; margin-bottom: 8px; line-height: 1.45; }
+        .card-block strong { color: var(--primary-dark); display: block; margin-bottom: 2px; font-size: 0.8rem; text-transform: uppercase; }
 
         .card-costs-summary { border-top: 1px dashed #ebeeef; padding-top: 8px; margin-top: 8px; font-size: 0.8rem; }
-        .cost-mini-row { display: flex; justify-content: space-between; padding: 2px 0; color: var(--text-main); }
+        .cost-mini-row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 3px 0; color: var(--text-main); border-bottom: 1px dashed #f6f4fa; }
+        .cost-mini-row:last-child { border-bottom: none; }
+        
         .card-footer-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-sub); margin-top: 10px; }
+        .btn-mini-delete { background: none; border: none; color: #ff5c5c; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
 
         /* BẢNG TỔNG TIỀN VÍ TIỀN */
         .summary-card {
             background: linear-gradient(135deg, #ffffff, #fdfbff);
             border-radius: 24px; padding: 20px; margin-bottom: 20px;
-            box-shadow: 0 8px 16px rgba(157, 141, 241, 0.06);
-            border: 1px solid rgba(157, 141, 241, 0.1);
+            box-shadow: 0 8px 16px rgba(157, 141, 241, 0.06); border: 1px solid rgba(157, 141, 241, 0.1);
         }
         .summary-header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: center; }
         .sum-box { background: #f8f6fc; padding: 12px; border-radius: 16px; border: 1px solid #f0ecf9; }
@@ -187,7 +167,7 @@
         .table-finance th { color: var(--text-sub); font-weight: 700; }
         .table-finance tr:last-child td { border-bottom: none; font-weight: 700; color: var(--primary-dark); }
 
-        /* POPUP & LIST COST INPUT */
+        /* POPUP MODAL VÀ THÀNH PHẦN NHẬP LIỆU */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(61, 52, 96, 0.3); backdrop-filter: blur(6px);
@@ -195,29 +175,22 @@
             opacity: 0; visibility: hidden; transition: all 0.25s ease; padding: 12px;
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content {
-            background: var(--card-bg); border-radius: 28px; padding: 20px;
-            width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto;
-        }
+        .modal-content { background: var(--card-bg); border-radius: 28px; padding: 20px; width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto; }
         .form-group { margin-bottom: 10px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 3px; color: var(--text-sub); }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 9px 12px; border: 2px solid #edf0f2; border-radius: 12px; outline: none; font-size: 0.9rem;
-        }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px 12px; border: 2px solid #edf0f2; border-radius: 12px; outline: none; font-size: 0.9rem; }
         .form-group input:focus { border-color: var(--primary); }
 
+        /* HÀNG NHẬP CHI PHÍ SONG SONG */
         .cost-input-item {
-            background: #fbfafc; border: 1px solid #ece9f2; padding: 8px; border-radius: 12px; margin-bottom: 6px;
-            display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr auto; gap: 4px; align-items: center;
+            background: #fbfafc; border: 1px solid #ece9f2; padding: 10px; border-radius: 14px; margin-bottom: 8px;
+            display: grid; grid-template-columns: 1.5fr 1.2fr 1fr 1fr 0.8fr auto; gap: 6px; align-items: center;
         }
-        .cost-input-item input, .cost-input-item select { padding: 6px; font-size: 0.8rem; border-radius: 8px; }
-        .btn-add-cost-row {
-            background: none; border: 1px dashed var(--primary); color: var(--primary-dark);
-            width: 100%; padding: 6px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-top: 4px;
-        }
+        .cost-input-item input, .cost-input-item select { padding: 6px; font-size: 0.8rem; border-radius: 8px; border: 1px solid #dcd9e2; width: 100%; }
+        .btn-add-cost-row { background: none; border: 1px dashed var(--primary); color: var(--primary-dark); width: 100%; padding: 8px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-top: 4px; }
 
         .modal-buttons { display: flex; gap: 8px; margin-top: 15px; }
-        .btn-action { flex: 1; padding: 11px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem;}
+        .btn-action { flex: 1; padding: 11px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
         .btn-action.save { background: var(--primary); color: white; }
         .btn-action.cancel { background: #f0eff5; color: var(--text-sub); }
 
@@ -236,30 +209,26 @@
 </head>
 <body>
 
+    <!-- NAVIGATION BAR -->
     <div class="bottom-nav">
-        <button class="nav-item active" id="nav-timeline" onclick="switchModule('timeline')">
-            <span>📅</span>Lịch Trình
-        </button>
-        <button class="nav-item" id="nav-finance" onclick="switchModule('finance')">
-            <span>💰</span>Ví Tiền
-        </button>
-        <button class="nav-item" id="nav-luggage" onclick="switchModule('luggage')">
-            <span>🎒</span>Hành Lý
-        </button>
+        <button class="nav-item active" id="nav-timeline" onclick="switchModule('timeline')"><span>📅</span>Lịch Trình</button>
+        <button class="nav-item" id="nav-finance" onclick="switchModule('finance')"><span>💰</span>Ví Tiền</button>
+        <button class="nav-item" id="nav-luggage" onclick="switchModule('luggage')"><span>🎒</span>Hành Lý</button>
     </div>
 
     <div class="header">
         <h1 style="font-size: 1.4rem;">Shanghai Travel Plan 🇨🇳</h1>
-        <p style="font-size: 0.85rem; opacity: 0.9;">Giao diện Module tiện lợi trên điện thoại ✨</p>
+        <p style="font-size: 0.85rem; opacity: 0.9;">Kế hoạch chi tiết 31/08 - 05/09 ✨</p>
     </div>
 
     <div class="container">
-        
+        <!-- MODULE 1: LỊCH TRÌNH -->
         <div id="module-timeline" class="app-module active">
             <div class="day-tabs" id="dayTabsZone"></div>
             
+            <!-- DASHBOARD CHI PHÍ THEO NGÀY -->
             <div class="day-dashboard">
-                <div class="dash-title">💰 Chi phí Ngày <span id="lbl-dash-day">1</span></div>
+                <div class="dash-title">💰 Chi phí <span id="lbl-dash-day-text">Ngày 1 (31/08)</span></div>
                 <div class="dash-grid">
                     <div class="dash-box">
                         <div>DỰ KIẾN</div>
@@ -276,6 +245,7 @@
             <button class="fab-btn" onclick="openTimelineModal()">＋</button>
         </div>
 
+        <!-- MODULE 2: TÀI CHÍNH & VÍ TIỀN -->
         <div id="module-finance" class="app-module">
             <div class="summary-card">
                 <h3 style="margin-bottom: 12px; text-align: center; font-size: 1rem; color: var(--primary-dark);">📊 Tổng Kết Chi Phí Toàn Chuyến</h3>
@@ -303,6 +273,7 @@
             </div>
         </div>
 
+        <!-- MODULE 3: HÀNH LÝ CHUẨN BỊ -->
         <div id="module-luggage" class="app-module">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="font-size:1rem;">Danh sách hành lý chuẩn bị 🎒</h3>
@@ -310,9 +281,9 @@
             </div>
             <div id="luggageListZone"></div>
         </div>
-
     </div>
 
+    <!-- POPUP LỊCH TRÌNH -->
     <div class="modal-overlay" id="timelineModal">
         <div class="modal-content">
             <h3 style="margin-bottom:12px; text-align:center; font-size:1.1rem; color:var(--primary-dark);" id="modalTitle">Thêm Điểm Mới ✨</h3>
@@ -320,7 +291,7 @@
             
             <div class="form-group">
                 <label>Ngày thứ mấy?</label>
-                <input type="number" id="formDayNumber" min="1" max="10">
+                <select id="formDayNumber"></select>
             </div>
             <div class="form-group">
                 <label>Khung giờ</label>
@@ -355,10 +326,19 @@
                 </select>
             </div>
 
+            <!-- DANH SÁCH CHI PHÍ ĐƯỢC TỐI ƯU SONG SONG -->
             <div style="margin-top:12px; border-top:1px solid #f0eff5; padding-top:10px;">
-                <label style="font-size:0.8rem; font-weight:700; color:var(--primary-dark);">💰 Danh Sách Các Khoản Chi Phí Phân Loại</label>
-                <div id="costFormRowsContainer" style="margin-top:6px;"></div>
-                <button type="button" class="btn-add-cost-row" onclick="addCostInputRow()">＋ Thêm một khoản chi phí</button>
+                <label style="font-size:0.8rem; font-weight:700; color:var(--primary-dark);">💰 Danh Sách Các Khoản Chi Phí</label>
+                <div style="display:grid; grid-template-columns: 1.5fr 1.2fr 1fr 1fr 0.8fr auto; gap:6px; padding:0 10px; margin-bottom:4px; font-size:0.7rem; font-weight:700; color:var(--text-sub);">
+                    <div>Tên khoản chi</div>
+                    <div>Phân loại</div>
+                    <div>Dự kiến</div>
+                    <div>Thực tế</div>
+                    <div>Đơn vị</div>
+                    <div></div>
+                </div>
+                <div id="costFormRowsContainer"></div>
+                <button type="button" class="btn-add-cost-row" onclick="addCostInputRow()">＋ Thêm một khoản chi phí mới</button>
             </div>
 
             <div class="modal-buttons">
@@ -368,10 +348,10 @@
         </div>
     </div>
 
+    <!-- POPUP HÀNH LÝ DROPDOWN -->
     <div class="modal-overlay" id="checklistModal">
         <div class="modal-content">
             <h3 style="margin-bottom:12px; text-align:center;">Thêm Đồ Vào Vali 🎒</h3>
-            
             <div class="form-group">
                 <label>Danh mục phân loại</label>
                 <select id="formChecklistCategory" onchange="checkCustomCategory(this.value)">
@@ -384,17 +364,14 @@
                     <option value="__CUSTOM__">➕ [Thêm danh mục mới...]</option>
                 </select>
             </div>
-
             <div class="form-group" id="customCategoryWrapper" style="display: none;">
                 <label>Tên danh mục mới bà muốn thêm:</label>
                 <input type="text" id="formChecklistCustomCategory" placeholder="Ví dụ: Đồ ăn vặt mang theo">
             </div>
-
             <div class="form-group">
                 <label>Tên món đồ cần mang</label>
                 <input type="text" id="formChecklistItemName" placeholder="Ví dụ: Củ sạc đa năng">
             </div>
-            
             <div class="modal-buttons">
                 <button class="btn-action cancel" onclick="closeModal('checklistModal')">Hủy</button>
                 <button class="btn-action save" onclick="saveChecklistData()">Thêm Luôn</button>
@@ -408,10 +385,13 @@
         let globalChecklistData = [];
         const RATE = 3900;
 
+        const dateMapping = {
+            1: "31/08", 2: "01/09", 3: "02/09", 4: "03/09", 5: "04/09", 6: "05/09"
+        };
+
         function switchModule(moduleName) {
             document.querySelectorAll('.app-module').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
             document.getElementById(`module-${moduleName}`).classList.add('active');
             document.getElementById(`nav-${moduleName}`).classList.add('active');
         }
@@ -426,17 +406,37 @@
             renderTimeline();
             renderFinanceSummary();
             renderChecklist();
+            populateDayDropdown();
         }
 
         function renderTabs() {
             const container = document.getElementById('dayTabsZone');
             let maxDay = 6;
             globalTimelineData.forEach(item => { if(item.day_number > maxDay) maxDay = item.day_number; });
+            
             let html = '';
             for(let i = 1; i <= maxDay; i++) {
-                html += `<button class="day-btn ${i === currentDay ? 'active' : ''}" onclick="switchDay(${i})">Ngày ${i}</button>`;
+                html += `
+                    <button class="day-btn ${i === currentDay ? 'active' : ''}" onclick="switchDay(${i})">
+                        <span class="num">Ngày ${i}</span>
+                        <span class="date">${dateMapping[i] || "Ngoại lệ"}</span>
+                    </button>
+                `;
             }
             container.innerHTML = html;
+        }
+
+        function populateDayDropdown() {
+            const select = document.getElementById('formDayNumber');
+            if(!select) return;
+            let maxDay = 6;
+            globalTimelineData.forEach(item => { if(item.day_number > maxDay) maxDay = item.day_number; });
+            
+            let html = '';
+            for(let i = 1; i <= maxDay; i++) {
+                html += `<option value="${i}">Ngày ${i} (${dateMapping[i] || ""})</option>`;
+            }
+            select.innerHTML = html;
         }
 
         function switchDay(day) {
@@ -446,19 +446,17 @@
         }
 
         function renderTimeline() {
-            document.getElementById('lbl-dash-day').innerText = currentDay;
+            document.getElementById('lbl-dash-day-text').innerText = `Ngày ${currentDay} (${dateMapping[currentDay] || ""})`;
             const container = document.getElementById('timelineListZone');
             const filtered = globalTimelineData.filter(item => item.day_number === currentDay);
 
-            // TÍNH TOÁN CHI PHÍ RIÊNG CHO DASHBOARD CỦA NGÀY HIỆN TẠI
-            let dayEst = 0;
-            let dayReal = 0;
+            let dayEst = 0; let dayReal = 0;
             filtered.forEach(item => {
                 if(item.costs && item.costs.length > 0) {
                     item.costs.forEach(c => {
-                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
-                        if(c.cost_type === 'Dự kiến') dayEst += valVnd;
-                        else dayReal += valVnd;
+                        let factor = c.currency === 'CNY' ? RATE : 1;
+                        dayEst += (c.amount_est || 0) * factor;
+                        dayReal += (c.amount_real || 0) * factor;
                     });
                 }
             });
@@ -466,7 +464,7 @@
             document.getElementById('lbl-dash-real').innerText = dayReal.toLocaleString() + ' đ';
 
             if(filtered.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-sub); font-size:0.85rem;">Hôm nay chưa xếp lịch đi đâu hết bà ơi, bấm nút ＋ để lên đồ đi quẩy thui!</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-sub); font-size:0.85rem;">Hôm nay chưa xếp lịch đi đâu hết bà ơi, bấm nút ＋ để thêm điểm nà!</div>`;
                 return;
             }
 
@@ -481,9 +479,17 @@
 
                 let costRowsHtml = '';
                 if(item.costs && item.costs.length > 0) {
+                    costRowsHtml += `<div class="cost-mini-row" style="font-weight:700; color:var(--text-sub); border-bottom:1px solid #ebeeef;"><div>Khoản chi (Phân loại)</div><div>Dự kiến</div><div>Thực tế</div></div>`;
                     item.costs.forEach(c => {
-                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
-                        costRowsHtml += `<div class="cost-mini-row"><span>• ${c.cost_name} (${c.category}) [${c.cost_type}]:</span> <strong>${c.currency === 'CNY' ? c.amount+'¥' : ''} ~ ${valVnd.toLocaleString()} đ</strong></div>`;
+                        let f = c.currency === 'CNY' ? RATE : 1;
+                        let showEst = c.currency === 'CNY' ? `${c.amount_est}¥` : `${c.amount_est.toLocaleString()}đ`;
+                        let showReal = c.amount_real > 0 ? (c.currency === 'CNY' ? `${c.amount_real}¥` : `${c.amount_real.toLocaleString()}đ`) : '-';
+                        costRowsHtml += `
+                            <div class="cost-mini-row">
+                                <span>• ${c.cost_name} <small style="color:var(--text-sub)">(${c.category})</small></span>
+                                <span style="color:var(--text-sub)">${showEst}</span>
+                                <span style="color:var(--text-done); font-weight:700;">${showReal}</span>
+                            </div>`;
                     });
                 }
 
@@ -491,24 +497,16 @@
                     <div class="timeline-card">
                         <div class="card-top">
                             <span class="time-badge">🕒 ${item.time_slot || 'Chưa định giờ'}</span>
-                            <span class="status-badge ${statusClass}" onclick="quickToggleStatus(${item.id}, '${item.status}')">
-                                ${item.status || 'Chưa đi'}
-                            </span>
+                            <span class="status-badge ${statusClass}" onclick="quickToggleStatus(${item.id}, '${item.status}')">${item.status || 'Chưa đi'}</span>
                         </div>
-                        
-                        <a href="${amapUrl}" target="_blank" class="location-link">
-                            📍 ${item.location} <span style="font-size:0.8rem; color:var(--text-sub)">🗺️</span>
-                        </a>
+                        <a href="${amapUrl}" target="_blank" class="location-link">📍 ${item.location} <span style="font-size:0.8rem; color:var(--text-sub)">🗺️</span></a>
                         ${item.location_zh ? `<div class="location-zh">🇨🇳 ${item.location_zh}</div>` : ''}
-                        
                         ${item.content ? `<div class="card-block"><strong>🎯 Hoạt động</strong>${item.content.replace(/\n/g, '<br>')}</div>` : ''}
-                        ${item.transport_guide ? `<div class="card-block" style="background:#f4fbf7; border-left:3px solid #52a135;"><strong>🚇 Hướng dẫn đường đi</strong>${item.transport_guide.replace(/\n/g, '<br>')}</div>` : ''}
-                        ${item.notes ? `<div class="card-block" style="background:#fffdf2; border-left:3px solid #ffcb00;"><strong>📌 Ghi chú riêng</strong>${item.notes.replace(/\n/g, '<br>')}</div>` : ''}
-                        
+                        ${item.transport_guide ? `<div class="card-block" style="background:#f4fbf7; border-left:3px solid #52a135;"><strong>🚇 Đường đi</strong>${item.transport_guide.replace(/\n/g, '<br>')}</div>` : ''}
+                        ${item.notes ? `<div class="card-block" style="background:#fffdf2; border-left:3px solid #ffcb00;"><strong>📌 Ghi chú</strong>${item.notes.replace(/\n/g, '<br>')}</div>` : ''}
                         ${costRowsHtml ? `<div class="card-costs-summary">${costRowsHtml}</div>` : ''}
-
                         <div class="card-footer-meta">
-                            <span style="color:var(--primary-dark); font-weight:700; cursor:pointer;" onclick="editTimeline(${item.id})">✏️ Chỉnh sửa</span>
+                            <span style="color:var(--primary-dark); font-weight:700; cursor:pointer;" onclick="editTimeline(${item.id})">✏️ Chỉnh sửa / Cập nhật phí</span>
                             <button class="btn-mini-delete" onclick="deleteTimeline(${item.id})">🗑️ Xóa</button>
                         </div>
                     </div>
@@ -518,9 +516,7 @@
         }
 
         function renderFinanceSummary() {
-            let totalEstAll = 0;
-            let totalRealAll = 0;
-
+            let totalEstAll = 0; let totalRealAll = 0;
             const cats = ["Di chuyển", "Ăn uống", "Vui chơi", "Mua sắm", "Khác"];
             const sumData = {};
             cats.forEach(c => sumData[c] = { est: 0, real: 0 });
@@ -528,16 +524,13 @@
             globalTimelineData.forEach(item => {
                 if(item.costs && item.costs.length > 0) {
                     item.costs.forEach(c => {
-                        let valueInVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
+                        let factor = c.currency === 'CNY' ? RATE : 1;
                         let categoryKey = cats.includes(c.category) ? c.category : "Khác";
                         
-                        if(c.cost_type === "Dự kiến") {
-                            sumData[categoryKey].est += valueInVnd;
-                            totalEstAll += valueInVnd;
-                        } else {
-                            sumData[categoryKey].real += valueInVnd;
-                            totalRealAll += valueInVnd;
-                        }
+                        sumData[categoryKey].est += (c.amount_est || 0) * factor;
+                        sumData[categoryKey].real += (c.amount_real || 0) * factor;
+                        totalEstAll += (c.amount_est || 0) * factor;
+                        totalRealAll += (c.amount_real || 0) * factor;
                     });
                 }
             });
@@ -552,24 +545,21 @@
                         <td style="font-weight:600;">${c}</td>
                         <td style="color:var(--text-sub);">${sumData[c].est.toLocaleString()} đ</td>
                         <td style="color:var(--text-main); font-weight:700;">${sumData[c].real.toLocaleString()} đ</td>
-                    </tr>
-                `;
+                    </tr>`;
             });
-
             html += `
                 <tr style="background:#f9f8fe;">
                     <td><strong>Tổng cộng</strong></td>
                     <td style="color:var(--text-sub);"><strong>${totalEstAll.toLocaleString()} đ</strong></td>
                     <td style="color:var(--primary-dark); font-size:1rem;"><strong>${totalRealAll.toLocaleString()} đ</strong></td>
-                </tr>
-            `;
+                </tr>`;
             document.getElementById('financeTableBody').innerHTML = html;
         }
 
         function renderChecklist() {
             const container = document.getElementById('luggageListZone');
             if(globalChecklistData.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-sub);">Chưa xếp món đồ nào vào vali luôn!</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-sub);">Chưa xếp món đồ nào luôn!</div>`;
                 return;
             }
             const groups = {};
@@ -585,25 +575,25 @@
                     const isChecked = item.is_checked === 1;
                     html += `
                         <div class="checklist-row">
-                            <div class="chk-left ${isChecked ? 'checked' : ''}" onclick="toggleChecklist(${item.id}, ${!isChecked})" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                            <div class="chk-left" onclick="toggleChecklist(${item.id}, ${!isChecked})" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
                                 <span>${isChecked ? '✅' : '⬜'}</span>
                                 <span style="${isChecked ? 'text-decoration:line-through; color:var(--text-sub);' : ''}">${item.item_name}</span>
                             </div>
                             <button class="btn-mini-delete" onclick="deleteChecklistItem(${item.id})">🗑️</button>
-                        </div>
-                    `;
+                        </div>`;
                 });
                 html += `</div>`;
             }
             container.innerHTML = html;
         }
 
-        function addCostInputRow(data = { cost_name:'', category:'Di chuyển', amount:0, currency:'CNY', cost_type:'Dự kiến' }) {
+        // HÀNG NHẬP LIỆU SONG SONG DỰ KIẾN VÀ THỰC TẾ
+        function addCostInputRow(data = { cost_name:'', category:'Di chuyển', amount_est:0, amount_real:0, currency:'CNY' }) {
             const container = document.getElementById('costFormRowsContainer');
             const row = document.createElement('div');
             row.className = 'cost-input-item';
             row.innerHTML = `
-                <input type="text" placeholder="Tên phí" class="c-name" value="${data.cost_name}">
+                <input type="text" placeholder="Tên khoản chi" class="c-name" value="${data.cost_name}">
                 <select class="c-cat">
                     <option value="Di chuyển" ${data.category==='Di chuyển'?'selected':''}>Di chuyển</option>
                     <option value="Ăn uống" ${data.category==='Ăn uống'?'selected':''}>Ăn uống</option>
@@ -611,14 +601,11 @@
                     <option value="Mua sắm" ${data.category==='Mua sắm'?'selected':''}>Mua sắm</option>
                     <option value="Khác" ${data.category==='Khác'?'selected':''}>Khác</option>
                 </select>
-                <input type="number" placeholder="Số tiền" class="c-amount" value="${data.amount}">
+                <input type="number" placeholder="Dự kiến" class="c-est" value="${data.amount_est || 0}">
+                <input type="number" placeholder="Thực tế" class="c-real" value="${data.amount_real || 0}">
                 <select class="c-curr">
                     <option value="CNY" ${data.currency==='CNY'?'selected':''}>CNY (¥)</option>
                     <option value="VND" ${data.currency==='VND'?'selected':''}>VND (đ)</option>
-                </select>
-                <select class="c-type">
-                    <option value="Dự kiến" ${data.cost_type==='Dự kiến'?'selected':''}>Dự kiến</option>
-                    <option value="Thực tế" ${data.cost_type==='Thực tế'?'selected':''}>Thực tế</option>
                 </select>
                 <button type="button" style="background:none; border:none; color:red; font-weight:700;" onclick="this.parentElement.remove()">X</button>
             `;
@@ -630,14 +617,15 @@
             const arr = [];
             rows.forEach(row => {
                 const name = row.querySelector('.c-name').value.trim();
-                const amount = parseFloat(row.querySelector('.c-amount').value) || 0;
+                const est = parseFloat(row.querySelector('.c-est').value) || 0;
+                const real = parseFloat(row.querySelector('.c-real').value) || 0;
                 if(name) {
                     arr.push({
                         cost_name: name,
                         category: row.querySelector('.c-cat').value,
-                        amount: amount,
-                        currency: row.querySelector('.c-curr').value,
-                        cost_type: row.querySelector('.c-type').value
+                        amount_est: est,
+                        amount_real: real,
+                        currency: row.querySelector('.c-curr').value
                     });
                 }
             });
@@ -666,7 +654,7 @@
             const item = globalTimelineData.find(x => x.id === id);
             if(!item) return;
 
-            document.getElementById('modalTitle').innerText = "Chỉnh Sửa Hành Trình ✏️";
+            document.getElementById('modalTitle').innerText = "Chỉnh Sửa Hành Trình & Cập Nhật Phí ✏️";
             document.getElementById('formTimelineId').value = item.id;
             document.getElementById('formDayNumber').value = item.day_number;
             document.getElementById('formTimeSlot').value = item.time_slot || '';
@@ -734,7 +722,6 @@
             }
         }
 
-        /* LOGIC POPUP HÀNH LÝ DROPDOWN */
         function openChecklistModal() {
             document.getElementById('formChecklistCategory').value = 'Giấy tờ';
             document.getElementById('formChecklistCustomCategory').value = '';
@@ -745,23 +732,16 @@
 
         function checkCustomCategory(val) {
             const wrapper = document.getElementById('customCategoryWrapper');
-            if(val === '__CUSTOM__') {
-                wrapper.style.display = 'block';
-            } else {
-                wrapper.style.display = 'none';
-            }
+            wrapper.style.display = (val === '__CUSTOM__') ? 'block' : 'none';
         }
 
         async function saveChecklistData() {
             const selectEl = document.getElementById('formChecklistCategory');
             let cat = selectEl.value;
-            
-            // Nếu chọn mục tự thêm danh mục mới
             if(cat === '__CUSTOM__') {
                 cat = document.getElementById('formChecklistCustomCategory').value.trim();
                 if(!cat) { alert("Bà ơi hãy nhập tên danh mục mới nha!"); return; }
             }
-
             const name = document.getElementById('formChecklistItemName').value.trim();
             if(!name) { alert("Bà chưa nhập tên món đồ kìa!"); return; }
 
