@@ -144,7 +144,8 @@
         .card-block strong { color: var(--primary-dark); display: block; margin-bottom: 2px; font-size: 0.8rem; text-transform: uppercase; }
 
         .card-costs-summary { border-top: 1px dashed #ebeeef; padding-top: 8px; margin-top: 8px; font-size: 0.8rem; }
-        .cost-mini-row { display: flex; justify-content: space-between; padding: 3px 0; color: var(--text-main); }
+        .cost-mini-row { display: flex; justify-content: space-between; padding: 3px 0; color: var(--text-main); border-bottom: 1px dashed #f4f3f7; }
+        .cost-mini-row:last-child { border-bottom: none; }
         
         .card-footer-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-sub); margin-top: 10px; }
         .btn-mini-delete { background: none; border: none; color: #ff5c5c; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
@@ -174,18 +175,22 @@
             opacity: 0; visibility: hidden; transition: all 0.25s ease; padding: 12px;
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--card-bg); border-radius: 28px; padding: 20px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background: var(--card-bg); border-radius: 28px; padding: 20px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
         .form-group { margin-bottom: 10px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 3px; color: var(--text-sub); }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px 12px; border: 2px solid #edf0f2; border-radius: 12px; outline: none; font-size: 0.9rem; }
         .form-group input:focus { border-color: var(--primary); }
 
+        /* LAYOUT NHẬP SONG SONG CHO MỖI HÀNG CHI PHÍ */
         .cost-input-item {
-            background: #fbfafc; border: 1px solid #ece9f2; padding: 8px; border-radius: 12px; margin-bottom: 6px;
-            display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr auto; gap: 4px; align-items: center;
+            background: #fbfafc; border: 1px solid #ece9f2; padding: 10px; border-radius: 14px; margin-bottom: 8px;
+            display: flex; flex-direction: column; gap: 6px; position: relative;
         }
-        .cost-input-item input, .cost-input-item select { padding: 6px; font-size: 0.8rem; border-radius: 8px; border: 1px solid #dcd9e2; width: 100%; }
-        .btn-add-cost-row { background: none; border: 1px dashed var(--primary); color: var(--primary-dark); width: 100%; padding: 6px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-top: 4px; }
+        .cost-row-top { display: grid; grid-template-columns: 2fr 1.5fr 1fr auto; gap: 6px; align-items: center; }
+        .cost-row-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        
+        .cost-input-item input, .cost-input-item select { padding: 7px; font-size: 0.8rem; border-radius: 8px; border: 1px solid #dcd9e2; width: 100%; }
+        .btn-add-cost-row { background: none; border: 1px dashed var(--primary); color: var(--primary-dark); width: 100%; padding: 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-top: 4px; }
 
         .modal-buttons { display: flex; gap: 8px; margin-top: 15px; }
         .btn-action { flex: 1; padding: 11px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
@@ -324,11 +329,11 @@
                 </select>
             </div>
 
-            <!-- DANH SÁCH CHI PHÍ CON THEO ĐÚNG CẤU TRÚC GỐC -->
+            <!-- DANH SÁCH CHI PHÍ CON - THIẾT KẾ NHẬP SONG SONG -->
             <div style="margin-top:12px; border-top:1px solid #f0eff5; padding-top:10px;">
-                <label style="font-size:0.8rem; font-weight:700; color:var(--primary-dark);">💰 Danh Sách Các Khoản Chi Phí Phân Loại</label>
+                <label style="font-size:0.8rem; font-weight:700; color:var(--primary-dark);">💰 Danh Sách Chi Phí Dự Kiến & Thực Tế</label>
                 <div id="costFormRowsContainer" style="margin-top:6px;"></div>
-                <button type="button" class="btn-add-cost-row" onclick="addCostInputRow()">＋ Thêm một khoản chi phí</button>
+                <button type="button" class="btn-add-cost-row" onclick="addCostInputRow()">＋ Thêm khoản chi phí</button>
             </div>
 
             <div class="modal-buttons">
@@ -386,10 +391,49 @@
             document.getElementById(`nav-${moduleName}`).classList.add('active');
         }
 
+        // 🌟 BỘ CHUYỂN ĐỔI TỰ ĐỘNG (DATA ADAPTER) ĐỂ ĐỌC ĐƯỢC CẢ DỮ LIỆU CŨ LẪN MỚI
+        function adaptCostData(rawCosts) {
+            if (!rawCosts || rawCosts.length === 0) return [];
+            
+            // Nếu dữ liệu đã có cấu trúc mới (có amount_est hoặc amount_real), trả về nguyên vẹn
+            if (rawCosts[0].hasOwnProperty('amount_est') || rawCosts[0].hasOwnProperty('amount_real')) {
+                return rawCosts;
+            }
+
+            // Nếu là dữ liệu cấu trúc cũ (chỉ có amount và cost_type), tiến hành gộp nhóm theo tên khoản chi
+            const gộpMap = {};
+            rawCosts.forEach(c => {
+                const key = `${c.cost_name}_${c.category}_${c.currency}`;
+                if (!gộpMap[key]) {
+                    gộpMap[key] = {
+                        cost_name: c.cost_name,
+                        category: c.category,
+                        currency: c.currency,
+                        amount_est: 0,
+                        amount_real: 0
+                    };
+                }
+                if (c.cost_type === 'Dự kiến') {
+                    gộpMap[key].amount_est = c.amount || 0;
+                } else {
+                    gộpMap[key].amount_real = c.amount || 0;
+                }
+            });
+            return Object.values(gộpMap);
+        }
+
         async function fetchAllData() {
             const res = await fetch('/api/data');
             const data = await res.json();
-            globalTimelineData = data.timeline || [];
+            
+            // Áp dụng bộ chuyển đổi dữ liệu khi tải từ Backend lên Frontend
+            globalTimelineData = (data.timeline || []).map(item => {
+                return {
+                    ...item,
+                    costs: adaptCostData(item.costs)
+                };
+            });
+            
             globalChecklistData = data.checklist || [];
             
             renderTabs();
@@ -444,9 +488,10 @@
             filtered.forEach(item => {
                 if(item.costs && item.costs.length > 0) {
                     item.costs.forEach(c => {
-                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
-                        if(c.cost_type === 'Dự kiến') dayEst += valVnd;
-                        else dayReal += valVnd;
+                        let estVnd = c.currency === 'CNY' ? c.amount_est * RATE : c.amount_est;
+                        let realVnd = c.currency === 'CNY' ? c.amount_real * RATE : c.amount_real;
+                        dayEst += estVnd;
+                        dayReal += realVnd;
                     });
                 }
             });
@@ -470,8 +515,20 @@
                 let costRowsHtml = '';
                 if(item.costs && item.costs.length > 0) {
                     item.costs.forEach(c => {
-                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
-                        costRowsHtml += `<div class="cost-mini-row"><span>• ${c.cost_name} (${c.category}) [${c.cost_type}]:</span> <strong>${c.currency === 'CNY' ? c.amount+'¥' : ''} ~ ${valVnd.toLocaleString()} đ</strong></div>`;
+                        let estVnd = c.currency === 'CNY' ? c.amount_est * RATE : c.amount_est;
+                        let realVnd = c.currency === 'CNY' ? c.amount_real * RATE : c.amount_real;
+                        
+                        let dispEst = c.currency === 'CNY' ? `${c.amount_est}¥ (~${estVnd.toLocaleString()}đ)` : `${estVnd.toLocaleString()}đ`;
+                        let dispReal = c.currency === 'CNY' ? `${c.amount_real}¥ (~${realVnd.toLocaleString()}đ)` : `${realVnd.toLocaleString()}đ`;
+
+                        costRowsHtml += `
+                            <div class="cost-mini-row">
+                                <span style="font-weight:600; color:var(--text-main);">• ${c.cost_name} (${c.category}):</span>
+                                <div style="text-align: right; font-size:0.75rem;">
+                                    <div style="color:var(--text-sub);">Dự kiến: ${dispEst}</div>
+                                    <div style="color:#52a135; font-weight:700;">Thực tế: ${dispReal}</div>
+                                </div>
+                            </div>`;
                     });
                 }
 
@@ -488,7 +545,7 @@
                         ${item.notes ? `<div class="card-block" style="background:#fffdf2; border-left:3px solid #ffcb00;"><strong>📌 Ghi chú</strong>${item.notes.replace(/\n/g, '<br>')}</div>` : ''}
                         ${costRowsHtml ? `<div class="card-costs-summary">${costRowsHtml}</div>` : ''}
                         <div class="card-footer-meta">
-                            <span style="color:var(--primary-dark); font-weight:700; cursor:pointer;" onclick="editTimeline(${item.id})">✏️ Chỉnh sửa</span>
+                            <span style="color:var(--primary-dark); font-weight:700; cursor:pointer;" onclick="editTimeline(${item.id})">✏️ Chỉnh sửa / Nhập Thực Tế</span>
                             <button class="btn-mini-delete" onclick="deleteTimeline(${item.id})">🗑️ Xóa</button>
                         </div>
                     </div>
@@ -506,16 +563,14 @@
             globalTimelineData.forEach(item => {
                 if(item.costs && item.costs.length > 0) {
                     item.costs.forEach(c => {
-                        let valVnd = c.currency === 'CNY' ? c.amount * RATE : c.amount;
+                        let estVnd = c.currency === 'CNY' ? c.amount_est * RATE : c.amount_est;
+                        let realVnd = c.currency === 'CNY' ? c.amount_real * RATE : c.amount_real;
                         let categoryKey = cats.includes(c.category) ? c.category : "Khác";
                         
-                        if(c.cost_type === 'Dự kiến') {
-                            sumData[categoryKey].est += valVnd;
-                            totalEstAll += valVnd;
-                        } else {
-                            sumData[categoryKey].real += valVnd;
-                            totalRealAll += valVnd;
-                        }
+                        sumData[categoryKey].est += estVnd;
+                        sumData[categoryKey].real += realVnd;
+                        totalEstAll += estVnd;
+                        totalRealAll += realVnd;
                     });
                 }
             });
@@ -572,29 +627,37 @@
             container.innerHTML = html;
         }
 
-        function addCostInputRow(data = { cost_name:'', category:'Di chuyển', amount:0, currency:'CNY', cost_type:'Dự kiến' }) {
+        // 🌟 GIAO DIỆN NHẬP SONG SONG KHÔNG CẦN GÕ LẠI TÊN CHI PHÍ TRÊN MỖI HÀNG
+        function addCostInputRow(data = { cost_name:'', category:'Di chuyển', amount_est:0, amount_real:0, currency:'CNY' }) {
             const container = document.getElementById('costFormRowsContainer');
             const row = document.createElement('div');
             row.className = 'cost-input-item';
             row.innerHTML = `
-                <input type="text" placeholder="Tên phí" class="c-name" value="${data.cost_name}">
-                <select class="c-cat">
-                    <option value="Di chuyển" ${data.category==='Di chuyển'?'selected':''}>Di chuyển</option>
-                    <option value="Ăn uống" ${data.category==='Ăn uống'?'selected':''}>Ăn uống</option>
-                    <option value="Vui chơi" ${data.category==='Vui chơi'?'selected':''}>Vui chơi</option>
-                    <option value="Mua sắm" ${data.category==='Mua sắm'?'selected':''}>Mua sắm</option>
-                    <option value="Khác" ${data.category==='Khác'?'selected':''}>Khác</option>
-                </select>
-                <input type="number" placeholder="Số tiền" class="c-amount" value="${data.amount}">
-                <select class="c-curr">
-                    <option value="CNY" ${data.currency==='CNY'?'selected':''}>CNY (¥)</option>
-                    <option value="VND" ${data.currency==='VND'?'selected':''}>VND (đ)</option>
-                </select>
-                <select class="c-type">
-                    <option value="Dự kiến" ${data.cost_type==='Dự kiến'?'selected':''}>Dự kiến</option>
-                    <option value="Thực tế" ${data.cost_type==='Thực tế'?'selected':''}>Thực tế</option>
-                </select>
-                <button type="button" style="background:none; border:none; color:red; font-weight:700;" onclick="this.parentElement.remove()">X</button>
+                <div class="cost-row-top">
+                    <input type="text" placeholder="Tên khoản chi" class="c-name" value="${data.cost_name}">
+                    <select class="c-cat">
+                        <option value="Di chuyển" ${data.category==='Di chuyển'?'selected':''}>Di chuyển</option>
+                        <option value="Ăn uống" ${data.category==='Ăn uống'?'selected':''}>Ăn uống</option>
+                        <option value="Vui chơi" ${data.category==='Vui chơi'?'selected':''}>Vui chơi</option>
+                        <option value="Mua sắm" ${data.category==='Mua sắm'?'selected':''}>Mua sắm</option>
+                        <option value="Khác" ${data.category==='Khác'?'selected':''}>Khác</option>
+                    </select>
+                    <select class="c-curr">
+                        <option value="CNY" ${data.currency==='CNY'?'selected':''}>CNY (¥)</option>
+                        <option value="VND" ${data.currency==='VND'?'selected':''}>VND (đ)</option>
+                    </select>
+                    <button type="button" style="background:none; border:none; color:red; font-weight:700; padding:0 4px;" onclick="this.parentElement.parentElement.remove()">X</button>
+                </div>
+                <div class="cost-row-bottom">
+                    <div>
+                        <span style="font-size:0.65rem; color:var(--text-sub); font-weight:700;">DỰ KIẾN:</span>
+                        <input type="number" placeholder="Tiền dự kiến" class="c-amount-est" value="${data.amount_est || 0}">
+                    </div>
+                    <div>
+                        <span style="font-size:0.65rem; color:#52a135; font-weight:700;">THỰC TẾ:</span>
+                        <input type="number" placeholder="Tiền thực tế" class="c-amount-real" value="${data.amount_real || 0}">
+                    </div>
+                </div>
             `;
             container.appendChild(row);
         }
@@ -604,14 +667,24 @@
             const arr = [];
             rows.forEach(row => {
                 const name = row.querySelector('.c-name').value.trim();
-                const amount = parseFloat(row.querySelector('.c-amount').value) || 0;
+                const est = parseFloat(row.querySelector('.c-amount-est').value) || 0;
+                const real = parseFloat(row.querySelector('.c-amount-real').value) || 0;
+                
                 if(name) {
+                    // Để tương thích ngược hoàn hảo với backend, mình sẽ tách hàng gộp này thành 2 object cũ gửi đi
                     arr.push({
                         cost_name: name,
                         category: row.querySelector('.c-cat').value,
-                        amount: amount,
+                        amount: est,
                         currency: row.querySelector('.c-curr').value,
-                        cost_type: row.querySelector('.c-type').value
+                        cost_type: 'Dự kiến'
+                    });
+                    arr.push({
+                        cost_name: name,
+                        category: row.querySelector('.c-cat').value,
+                        amount: real,
+                        currency: row.querySelector('.c-curr').value,
+                        cost_type: 'Thực tế'
                     });
                 }
             });
@@ -691,7 +764,7 @@
 
             const item = globalTimelineData.find(x => x.id === id);
             if(!item) return;
-            const payload = { ...item, status: nextStatus };
+            const payload = { ...item, costs: getCostsFromExistingItem(item.costs), status: nextStatus };
 
             await fetch(`/api/timeline/${id}`, {
                 method: 'PUT',
@@ -699,6 +772,16 @@
                 body: JSON.stringify(payload)
             });
             fetchAllData();
+        }
+
+        function getCostsFromExistingItem(adaptedCosts) {
+            const arr = [];
+            if(!adaptedCosts) return arr;
+            adaptedCosts.forEach(c => {
+                arr.push({ cost_name: c.cost_name, category: c.category, amount: c.amount_est, currency: c.currency, cost_type: 'Dự kiến' });
+                arr.push({ cost_name: c.cost_name, category: c.category, amount: c.amount_real, currency: c.currency, cost_type: 'Thực tế' });
+            });
+            return arr;
         }
 
         async function deleteTimeline(id) {
